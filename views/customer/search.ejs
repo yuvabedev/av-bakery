@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <title>AV Bakery: <%=pageTitle%></title>
+  </head>
+  <body>
+    <header>
+      <h1>Auroville Bakery Order Management</h1>
+      <h2>Search Customer</h2>
+      <p>Please use the form to search for customer by name or accout number</p>
+    </header>
+    <input type="text" name="query" id="searchQuery" />
+    <input type="radio" class="searchBy" name="searchBy" value="searchByName" />
+    <label>Name</label>
+    <input type="radio" class="searchBy" name="searchBy" value="searchByAccount" />
+    <label>Account number</label><br />
+    <button id="searchCustomerButton">Search</button>
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/app.js"></script>
+</html>

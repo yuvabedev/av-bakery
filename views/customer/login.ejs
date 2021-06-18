@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- set viewport to device width to make site responsive -->
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<h4>Welcome <%= user.first_name %></h4>
+<h4>Email: <%= user.email %></h4>
+<h4>Country: <%= user.country %></h4>
+<h4>Please <a href="/select-tickets">click here</a> to buy tickets for your favorite games.</h4>
+<h4>Zip Code: <%= user.zip %></h4>
+
+<h2>Current Weather</h2>
+<h3><%= weather.desciption %></h3>
+<h4>Temparature <%= weather.temperature %></h4>
+<h4>Humidity <%= weather.humidity %></h4>
+<h4>Sunset: <%= weather.sunset %></h4>
+<h4>Sunrise: <%= weather.sunrise %></h4>
+
+<script src="scripts/jquery.js"></script>
+<script src="scripts/app.js"></script>
+
+</body>
+</html>
