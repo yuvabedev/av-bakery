@@ -6,19 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="styles/base.css" />
     <title>AV Bakery: <%=pageTitle%></title>
+    <style>
+      #customerTable {
+        display: flex; /* aligns all child elements (flex items) in a row */
+        margin-top: 25px;
+        flex-direction: column;
+        align-self: center;
+        width: 800px;
+        border: 1px solid #894e3f;
+      }
+      header {
+        background-color: #faebd7;
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        font-weight: bold;
+      }
+
+      .col {
+        width: 150px;
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      #searchCustomerButton {
+        margin-top: 20px;
+      }
+    </style>
   </head>
+
   <body>
-    <header>
+    <div>
       <h1>Auroville Bakery Order Management</h1>
       <h2>Search Customer</h2>
       <p>Please use the form to search for customer by name or accout number</p>
-    </header>
+    </div>
     <input type="text" name="query" id="searchQuery" />
-    <input type="radio" class="searchBy" name="searchBy" value="searchByName" />
-    <label>Name</label>
-    <input type="radio" class="searchBy" name="searchBy" value="searchByAccount" />
-    <label>Account number</label><br />
+    <input type="radio" class="searchBy" name="searchBy" value="account" checked />
+    <label>Account number</label>
+    <input type="radio" class="searchBy" name="searchBy" value="name" />
+    <label>Name</label><br />
+    <span id="requestError"></span>
     <button id="searchCustomerButton">Search</button>
+    <section id="customerTable">
+      <header>
+        <div class="col">Name</div>
+        <div class="col">Account</div>
+        <div class="col">Community</div>
+        <div class="col">Phone</div>
+        <div class="col">Email</div>
+      </header>
+    </section>
   </body>
 
   <script src="scripts/jquery.js"></script>

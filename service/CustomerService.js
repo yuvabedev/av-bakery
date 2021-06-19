@@ -1,21 +1,18 @@
 var util = require('util');
 
+var path = require('path');
+var filename = path.basename(__filename);
+
 var connection = require('../db');
 
-function searchCustomerByName(searchText, callback) {
-  var sql = "SELECT * FROM `customer` WHERE `name` LIKE '%s%'";
-  var formattedSql = util.format(sql, searchText);
-  executeQuery(formattedSql, callback);
-}
-
-function searchCustomerByAccount(searchText, callback) {
-  var sql = "SELECT * FROM `customer` WHERE `account` LIKE '%s%'";
+function searchCustomer(searchText, searchBy, callback) {
+  var sql = getQueryForSearchBy(searchBy);
   var formattedSql = util.format(sql, searchText);
   executeQuery(formattedSql, callback);
 }
 
 function executeQuery(sql, callback) {
-  console.log(util.format('Executing SQL: %s', sql));
+  console.log(util.format('%s: Executing SQL: %s', filename, sql));
   connection.query(sql, function (error, results) {
     if (error) {
       callback(error, results);
@@ -25,7 +22,9 @@ function executeQuery(sql, callback) {
   });
 }
 
+function getQueryForSearchBy(searchBy) {
+  return util.format("SELECT * FROM `customer` WHERE `%s` LIKE '%s%'", searchBy);
+}
 module.exports = {
-  searchCustomerByName,
-  searchCustomerByAccount,
+  searchCustomer,
 };
