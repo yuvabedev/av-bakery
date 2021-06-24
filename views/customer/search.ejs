@@ -12,7 +12,7 @@
         margin-top: 25px;
         flex-direction: column;
         align-self: center;
-        width: 800px;
+        width: 1000px;
         border: 1px solid #894e3f;
       }
       header {
@@ -24,15 +24,28 @@
       }
 
       .col {
-        width: 150px;
+        width: 200px;
         text-align: center;
       }
       .row {
         display: flex;
         flex-direction: row;
       }
+
+      .alert {
+        color: #f44336;
+      }
+
+      .warning {
+        color: rgb(255, 153, 0);
+      }
+
+      .success {
+        color: green;
+      }
+
       #searchCustomerButton {
-        margin-top: 20px;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -48,10 +61,13 @@
     <label>Account number</label>
     <input type="radio" class="searchBy" name="searchBy" value="name" />
     <label>Name</label><br />
-    <span id="requestError"></span>
+    <span id="requestError" style="display: block; margin-top: 10px" class="alert"></span>
+    <span id="responseError" style="display: block; margin-top: 10px" class="warning"></span>
+    <span id="responseSuccess" style="display: block; margin-top: 10px" class="success"></span>
     <button id="searchCustomerButton">Search</button>
     <section id="customerTable">
       <header>
+        <div class="col">Select</div>
         <div class="col">Name</div>
         <div class="col">Account</div>
         <div class="col">Community</div>

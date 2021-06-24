@@ -17,6 +17,7 @@ function searchCustomers(criteria) {
   $.post('searchCustomers', criteria)
     .done(function (data) {
       console.log(data);
+      displayRequestStatus(data);
       displayCustomerSearch(data);
     })
     .fail(function (e) {
@@ -33,9 +34,18 @@ function displayError(errorMessage) {
 function clearCustomeSearch() {
   console.log('Clearing customer search data....');
   $('#requestError').html('');
+  $('#responseError').html('');
+  $('#responseSuccess').html('');
   $('#customerTable .row').remove();
 }
 
+function displayRequestStatus(data) {
+  if (data.length < 1) {
+    $('#responseError').html('No customers found with given search criteria');
+  } else {
+    $('#responseSuccess').html(`${data.length} customers found`);
+  }
+}
 function displayCustomerSearch(data) {
   for (var row in data) {
     var customer = data[row];
@@ -43,18 +53,23 @@ function displayCustomerSearch(data) {
     var customerRow = getRowForCustomer(customer);
     $('#customerTable').find('header').after(customerRow);
   }
+}
 
-  function getRowForCustomer(customer) {
-    var columnName = getColumnValueAsDiv(customer.name);
-    var columnAccount = getColumnValueAsDiv(customer.account);
-    var columnCommunity = getColumnValueAsDiv(customer.community);
-    var columnPhone = getColumnValueAsDiv(customer.phone);
-    var columnEmail = getColumnValueAsDiv(customer.email);
+function getRowForCustomer(customer) {
+  var colCustomerIdRadio = getCustomerIdAsRadio(customer.id);
+  var columnName = getCustomerAttributeAsColumn(customer.name);
+  var columnAccount = getCustomerAttributeAsColumn(customer.account);
+  var columnCommunity = getCustomerAttributeAsColumn(customer.community);
+  var columnPhone = getCustomerAttributeAsColumn(customer.phone);
+  var columnEmail = getCustomerAttributeAsColumn(customer.email);
 
-    return `<div class="row">${columnName}${columnAccount}${columnCommunity}${columnPhone}${columnEmail}</div>`;
-  }
+  return `<div class="row">${colCustomerIdRadio}${columnName}${columnAccount}${columnCommunity}${columnPhone}${columnEmail}</div>`;
+}
 
-  function getColumnValueAsDiv(columnValue) {
-    return `<div class="col">${columnValue}</div>`;
-  }
+function getCustomerAttributeAsColumn(columnValue) {
+  return `<div class="col">${columnValue}</div>`;
+}
+
+function getCustomerIdAsRadio(id) {
+  return `<div class="col"><input type="radio" class="customerId" name="customerId" value="${id}" /></div>`;
 }
