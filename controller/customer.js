@@ -1,5 +1,7 @@
 var express = require('express');
 
+var util = require('util');
+
 var path = require('path');
 var filename = path.basename(__filename);
 
@@ -10,9 +12,10 @@ var utility = require('./Utility');
 
 var httpResponse = {};
 var requestError = {};
+var requestData = {};
 
 router.post('/searchCustomers', (request, response) => {
-  if (!validateRequest(request)) {
+  if (!validateSearchRequest(request)) {
     response.status(400).send(requestError);
     return;
   }
@@ -21,17 +24,14 @@ router.post('/searchCustomers', (request, response) => {
   var searchString = requestJson.searchQuery;
   httpResponse = response;
 
-  var error = {};
-  var data = {};
-
   customerService.searchCustomer(
     searchString,
     searchBy,
-    prepareDataForView.bind({ error: error, data: data })
+    sendResponse.bind({ error: requestError, data: requestData })
   );
 });
 
-function prepareDataForView(error, data) {
+function sendResponse(error, data) {
   if (error) {
     console.log(error);
     httpResponse.status(501).send(error);
@@ -41,7 +41,12 @@ function prepareDataForView(error, data) {
   }
 }
 
-function validateRequest(request) {
+function renderView(error, data) {
+  console.log(data[0]);
+  httpResponse.render('customer/edit', { customer: data[0], error: "" });
+}
+
+function validateSearchRequest(request) {
   var requestJson = request.body;
   var searchBy = requestJson.searchBy;
   var searchString = requestJson.searchQuery;
@@ -65,4 +70,61 @@ function validateRequest(request) {
   }
   return true;
 }
+
+router.get('/customerEdit', (request, response) => {
+  httpResponse = response;
+  var customerId = request.query.customerId;
+  console.log(util.format('%s: Fetching Customer Id: %s', filename, customerId));
+  customerService.fetchCustomer(customerId, 'id', renderView.bind({ error: requestError, data: requestData }));
+});
+
+router.post('/customerSave', (request, response) => {
+  httpResponse = response;
+  var customer = {};
+  customer.id = request.body.customerId;
+  customer.name = request.body.customerName;
+  customer.account = request.body.customerAccount;
+  customer.community = request.body.customerCommunity;
+  customer.phone = request.body.customerPhone;
+  customer.email = request.body.customerEmail;
+  customer.notes = request.body.customerNotes;
+
+  console.log(customer);
+
+  if (!validateCustomer(customer)) {
+    httpResponse.render('customer/edit', { customer: customer, error: requestError });
+    return;
+  }
+
+  httpResponse.render('customer/view', { customer: {} });
+});
+
+function validateCustomer(customer) {
+    if (!utility.hasValue(customer.id)) {
+      requestError = 'No customer id defined. Please contact support.';
+      return false;
+    }
+    if (!utility.hasValue(customer.name)) {
+      requestError = 'Name can not be empty.';
+      return false;
+    }
+    if (!utility.hasValue(customer.account)) {
+      requestError = 'Account can not be empty.';
+      return false;
+    }
+    if (!utility.hasValue(customer.phone)) {
+      requestError = 'Phone can not be empty.';
+      return false;
+    }
+    if (!utility.hasValue(customer.email)) {
+      requestError = 'E-mail can not be empty.';
+      return false;
+    }
+    return true;
+  }
+
+router.get('customerGet', (request, response) => {
+
+});
+
 module.exports = router;

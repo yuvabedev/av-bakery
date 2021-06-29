@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <title>AV Bakery: Edit Customer Page</title>
+    <style>
+      .form-submit {
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <h1>Auroville Bakery Order Management</h1>
+      <h2>Edit Customer</h2>
+    </div>
+
+    <form action="/customerSave" method="post">
+      <section class="form-group">
+        <p>Please use the form to make changes to customer profile</p>
+        <ul class="form-fields">
+          <input type="hidden" name="customerId" id="customerId" value="<%= customer.id %>"/>
+          <li>
+            <label for="description">Name:</label>
+            <input type="text" name="customerName" id="customerName" value="<%= customer.name %>" class="text-input" />
+          </li>
+          <li>
+            <label for="description">Account:</label>
+            <input type="text" name="customerAccount" id="customerAccount" value="<%= customer.account %>" class="text-input" />
+          </li>
+          <li>
+            <label for="description">Community:</label>
+            <input type="text" name="customerCommunity" id="customerCommunity" value="<%= customer.community %>" class="text-input" />
+          </li>
+          <li>
+            <label for="description">Phone:</label>
+            <input type="text" name="customerPhone" id="customerPhone" value="<%= customer.phone %>" class="text-input" />
+          </li>
+          <li>
+            <label for="description">Email:</label>
+            <input type="text" name="customerEmail" id="customerEmail" value="<%= customer.email %>" class="text-input" />
+          </li>
+          <li>
+            <label for="description">Notes:</label>
+            <input type="text" name="customerNotes" id="customerNotes" value="<%= customer.notes %>" class="text-input" />
+          </li>
+        </ul>
+      </section>
+
+      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+
+      <section class="form-submit" id="customerActions">
+        <h4>All finished?</h4>
+        <button id="saveCustomerButton" class="customer-button">Save</button>
+        <button id="cancelCustomerEditButton" class="customer-button">Cancel</button>
+      </section>
+
+    </form>
+
+
+
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/app.js"></script>
+</html>

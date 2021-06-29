@@ -16,11 +16,11 @@
         border: 1px solid #894e3f;
       }
       header {
-        background-color: #faebd7;
+        background-color: #f6ddce;
         width: auto;
         display: flex;
         flex-direction: row;
-        font-weight: bold;
+        font-size: 1.1em;
       }
 
       .col {
@@ -31,22 +31,6 @@
         display: flex;
         flex-direction: row;
       }
-
-      .alert {
-        color: #f44336;
-      }
-
-      .warning {
-        color: rgb(255, 153, 0);
-      }
-
-      .success {
-        color: green;
-      }
-
-      #searchCustomerButton {
-        margin-top: 10px;
-      }
     </style>
   </head>
 
@@ -56,15 +40,23 @@
       <h2>Search Customer</h2>
       <p>Please use the form to search for customer by name or accout number</p>
     </div>
-    <input type="text" name="query" id="searchQuery" />
-    <input type="radio" class="searchBy" name="searchBy" value="account" checked />
-    <label>Account number</label>
-    <input type="radio" class="searchBy" name="searchBy" value="name" />
-    <label>Name</label><br />
-    <span id="requestError" style="display: block; margin-top: 10px" class="alert"></span>
-    <span id="responseError" style="display: block; margin-top: 10px" class="warning"></span>
-    <span id="responseSuccess" style="display: block; margin-top: 10px" class="success"></span>
-    <button id="searchCustomerButton">Search</button>
+    <section class="form-group">
+      <ul class="form-fields">
+        <li>
+          <input type="text" name="query" id="searchQuery" />
+          <input type="radio" class="searchBy" name="searchBy" value="account" checked />
+          <label>Account number</label>
+          <input type="radio" class="searchBy" name="searchBy" value="name" />
+          <label>Name</label>
+        </li>
+      </ul>
+    </section>
+
+    <span id="searchMessage" style="display: block; margin-top: 10px; height: 25px"> </span>
+
+    <button id="searchCustomerButton" class="customer-button" style="margin-top: 20px">
+      Search
+    </button>
     <section id="customerTable">
       <header>
         <div class="col">Select</div>
@@ -75,6 +67,11 @@
         <div class="col">Email</div>
       </header>
     </section>
+    <span id="editMessage" style="display: block; margin-top: 10px; height: 25px"></span>
+    <div id="customerActions" style="margin-top: 30px; display: none">
+      <button id="fetchCustomerToEditButton" class="customer-button">Edit</button>
+      <button id="createCustomerOrderButton" class="customer-button">Create Order</button>
+    </div>
   </body>
 
   <script src="scripts/jquery.js"></script>

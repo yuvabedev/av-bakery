@@ -12,13 +12,13 @@ $('#searchCustomerButton').click(function () {
 });
 
 function searchCustomers(criteria) {
-  console.log(criteria);
-
   $.post('searchCustomers', criteria)
     .done(function (data) {
+      console.log('Request Success!!');
       console.log(data);
       displayRequestStatus(data);
       displayCustomerSearch(data);
+      displayCustomerActions(data);
     })
     .fail(function (e) {
       console.log(e);
@@ -29,30 +29,42 @@ function searchCustomers(criteria) {
 }
 
 function displayError(errorMessage) {
-  $('#requestError').html(errorMessage);
+  $('#searchMessage').html(errorMessage).addClass('error');
 }
 function clearCustomeSearch() {
+  hideMessages();
   console.log('Clearing customer search data....');
-  $('#requestError').html('');
-  $('#responseError').html('');
-  $('#responseSuccess').html('');
   $('#customerTable .row').remove();
+  hideCustomerActions();
 }
 
+function hideMessages() {
+  $('#searchMessage').html('').removeClass('error warning success');
+  $('#editMessage').html('').removeClass('error');
+}
 function displayRequestStatus(data) {
   if (data.length < 1) {
-    $('#responseError').html('No customers found with given search criteria');
+    $('#searchMessage').html('No customers found with given search criteria').addClass('warning');
   } else {
-    $('#responseSuccess').html(`${data.length} customers found`);
+    $('#searchMessage').html(`${data.length} customers found`).addClass('success');
   }
 }
 function displayCustomerSearch(data) {
   for (var row in data) {
     var customer = data[row];
-    console.log('Customer:' + customer);
     var customerRow = getRowForCustomer(customer);
     $('#customerTable').find('header').after(customerRow);
   }
+}
+
+function displayCustomerActions(data) {
+  if (data.length > 0) {
+    $('#customerActions').show();
+  }
+}
+
+function hideCustomerActions() {
+  $('#customerActions').hide();
 }
 
 function getRowForCustomer(customer) {
@@ -73,3 +85,14 @@ function getCustomerAttributeAsColumn(columnValue) {
 function getCustomerIdAsRadio(id) {
   return `<div class="col"><input type="radio" class="customerId" name="customerId" value="${id}" /></div>`;
 }
+
+$('#fetchCustomerToEditButton').click(function () {
+  var customerId = $("input[name='customerId']:checked").val();
+  if (customerId == undefined) {
+    $('#editMessage').html('Please select a customer to edit').addClass('error');
+    return;
+  }
+  console.log(`Fetching customer with id: ${customerId}`);
+
+  window.location.href = `/customerEdit?customerId=${customerId}`;
+});

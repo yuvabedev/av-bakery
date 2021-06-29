@@ -1,10 +1,10 @@
 const routes = require('express').Router();
 
 routes.get('/', (req, res) => {
-  res.redirect('/customer_search');
+  res.redirect('/customerSearch');
 });
 
-routes.get('/customer_search', (req, res) => {
+routes.get('/customerSearch', (req, res) => {
   res.render('customer/search.ejs', { pageTitle: 'Search Customer' });
 });
 

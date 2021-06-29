@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <title>AV Bakery: Edit Customer Page</title>
+    <style>
+      .form-submit {
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <h1>Auroville Bakery Order Management</h1>
+      <h2>View Customer</h2>
+    </div>
+
+    <section class="form-group">
+      <ul class="form-fields">
+        <li>
+          <label for="description">Name:</label>
+          <span>value="<%= customer.name %>"</span>
+        </li>
+        <li>
+          <label for="description">Account:</label>
+          <span>value="<%= customer.account %>"</span>
+        </li>
+        <li>
+          <label for="description">Community:</label>
+          <span>value="<%= customer.community %>"</span>
+        </li>
+        <li>
+          <label for="description">Phone:</label>
+          <span>value="<%= customer.phone %>"</span>
+        </li>
+        <li>
+          <label for="description">Email:</label>
+          <span>value="<%= customer.email %>"</span>
+        </li>
+        <li>
+          <label for="description">Notes:</label>
+          <span>value="<%= customer.notes %>"</span>
+        </li>
+      </ul>
+    </section>
+
+    <span id="requestError" style="display: block; margin-top: 10px" class="alert"></span>
+    <span id="responseError" style="display: block; margin-top: 10px" class="warning"></span>
+    <span id="responseSuccess" style="display: block; margin-top: 10px" class="success"></span>
+
+    <section class="form-submit" id="customerActions">
+      <h4>All finished?</h4>
+      <button id="saveCustomerButton" class="customer-button">Save</button>
+      <button id="cancelCustomerEditButton" class="customer-button">Cancel</button>
+    </section>
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/app.js"></script>
+</html>
