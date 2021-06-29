@@ -28,11 +28,15 @@ function executeQuery(sql, callback) {
   });
 }
 
-function saveCustomer(customer, callback) {
-
+function updateCustomer(customer, callback) {
+  var updateSql = getQueryForUpdate(customer);
+  executeQuery(updateSql, callback);
 }
 
-function getQueryForSave(customer) 
+function getQueryForUpdate(customer) {
+  var updateCustomerSql = "UPDATE customer SET name = '%s', account = '%s', community = '%s', phone = '%s', email = '%s', notes = '%s' WHERE id = '%s'";
+  return util.format(updateCustomerSql, customer.name, customer.account, customer.community, customer.phone, customer.email, customer.notes, customer.id);
+}
 
 function getQueryForFetch(getBy) {
   return util.format("SELECT * FROM `customer` WHERE `%s` = '%s'", getBy);
@@ -44,4 +48,5 @@ function getQueryForSearchBy(searchBy) {
 module.exports = {
   searchCustomer,
   fetchCustomer,
+  updateCustomer,
 };

@@ -12,7 +12,7 @@ $('#searchCustomerButton').click(function () {
 });
 
 function searchCustomers(criteria) {
-  $.post('searchCustomers', criteria)
+  $.get('searchCustomers', criteria)
     .done(function (data) {
       console.log('Request Success!!');
       console.log(data);

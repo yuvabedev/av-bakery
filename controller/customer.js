@@ -13,15 +13,21 @@ var utility = require('./Utility');
 var httpResponse = {};
 var requestError = {};
 var requestData = {};
+var nextView = "";
+var nextRedirect = "";
 
-router.post('/searchCustomers', (request, response) => {
+/**
+ * handles http request to search for customer data with name or account number
+ * returns a json with an array of customer objects
+ */
+router.get('/searchCustomers', (request, response) => {
   if (!validateSearchRequest(request)) {
     response.status(400).send(requestError);
     return;
   }
-  var requestJson = request.body;
-  var searchBy = requestJson.searchBy;
-  var searchString = requestJson.searchQuery;
+  var searchString = request.query.searchQuery;
+  var searchBy = request.query.searchBy;
+
   httpResponse = response;
 
   customerService.searchCustomer(
@@ -31,25 +37,77 @@ router.post('/searchCustomers', (request, response) => {
   );
 });
 
+/**
+ * handles http request to get a customer with a given id. 
+ * The id provided as query param: /customerEdit?id={id}
+ * returns the json representing customer object
+ */
+router.get('/customerEdit', (request, response) => {
+  httpResponse = response;
+  var customerId = request.query.customerId;
+  console.log(util.format('%s: Fetching Customer Id: %s', filename, customerId));
+  nextView = "customer/edit";
+  customerService.fetchCustomer(customerId, 'id', renderNextView.bind({ error: requestError, data: requestData }));
+});
+
+/**
+ * handles http request to update a customer
+ * The customer data is encapsulated in request body
+ * In case of an error with the request, the response is returned to the edit form
+ * In case of success the response is rediected to the view page
+ */
+router.post('/customerSave', (request, response) => {
+  httpResponse = response;
+  var customer = {};
+  customer.id = request.body.customerId;
+  customer.name = request.body.customerName;
+  customer.account = request.body.customerAccount;
+  customer.community = request.body.customerCommunity;
+  customer.phone = request.body.customerPhone;
+  customer.email = request.body.customerEmail;
+  customer.notes = request.body.customerNotes;
+  console.log(customer);
+
+  if (!validateCustomer(customer)) {
+    httpResponse.render('customer/edit', { customer: customer, error: requestError });
+    console.log("request to edit customer failed validation!");
+    return;
+  }
+  nextRedirect="customerView?id=" + customer.id;
+  customerService.updateCustomer(customer, redirectRequest.bind({ error: requestError, data: requestData }))
+});
+
+router.get('/customerView', (request, response) => {
+  httpResponse = response;
+  var customerId = request.query.id;
+  console.log(util.format('%s: Fetching Customer Id: %s', filename, customerId));
+  nextView = "customer/view";
+  customerService.fetchCustomer(customerId, 'id', renderNextView.bind({ error: requestError, data: requestData }));
+});
+
 function sendResponse(error, data) {
   if (error) {
     console.log(error);
     httpResponse.status(501).send(error);
   } else {
-    //console.log(data);
     httpResponse.status(201).send(data);
   }
 }
 
-function renderView(error, data) {
-  console.log(data[0]);
-  httpResponse.render('customer/edit', { customer: data[0], error: "" });
+function renderNextView(error, data) {
+  console.log(util.format('%s: Rendering View: %s', filename, nextView));
+  httpResponse.render(nextView, { customer: data[0], error: "" });
+}
+
+function redirectRequest(error, data) {
+  console.log(util.format('%s: Redirecting to URL: %s', filename, nextRedirect));
+  httpResponse.redirect(nextRedirect);
 }
 
 function validateSearchRequest(request) {
-  var requestJson = request.body;
-  var searchBy = requestJson.searchBy;
-  var searchString = requestJson.searchQuery;
+  var searchString = request.query.searchQuery;
+  var searchBy = request.query.searchBy;
+
   if (!searchString) {
     requestError = 'Please enter a value to search';
     return false;
@@ -70,34 +128,6 @@ function validateSearchRequest(request) {
   }
   return true;
 }
-
-router.get('/customerEdit', (request, response) => {
-  httpResponse = response;
-  var customerId = request.query.customerId;
-  console.log(util.format('%s: Fetching Customer Id: %s', filename, customerId));
-  customerService.fetchCustomer(customerId, 'id', renderView.bind({ error: requestError, data: requestData }));
-});
-
-router.post('/customerSave', (request, response) => {
-  httpResponse = response;
-  var customer = {};
-  customer.id = request.body.customerId;
-  customer.name = request.body.customerName;
-  customer.account = request.body.customerAccount;
-  customer.community = request.body.customerCommunity;
-  customer.phone = request.body.customerPhone;
-  customer.email = request.body.customerEmail;
-  customer.notes = request.body.customerNotes;
-
-  console.log(customer);
-
-  if (!validateCustomer(customer)) {
-    httpResponse.render('customer/edit', { customer: customer, error: requestError });
-    return;
-  }
-
-  httpResponse.render('customer/view', { customer: {} });
-});
 
 function validateCustomer(customer) {
     if (!utility.hasValue(customer.id)) {
@@ -122,9 +152,5 @@ function validateCustomer(customer) {
     }
     return true;
   }
-
-router.get('customerGet', (request, response) => {
-
-});
 
 module.exports = router;
