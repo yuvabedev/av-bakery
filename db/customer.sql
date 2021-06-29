@@ -8,7 +8,7 @@ CREATE TABLE customer (
     email varchar(100),
     phone varchar(20),
     status varchar(10) NOT NULL,
-    notes varchar(200),
+    notes varchar(500),
     PRIMARY KEY (ID),
     UNIQUE (ID)
 );

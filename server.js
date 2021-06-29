@@ -16,7 +16,7 @@ const routes = require('./routes');
 //  Connect all our routes to our application
 app.use('/', routes);
 
-var customerRoutes = require('./controller/customer');
+var customerRoutes = require('./router/CustomerRouter');
 app.use('/', customerRoutes);
 
 app.use(express.static(path.join(__dirname, './static')));

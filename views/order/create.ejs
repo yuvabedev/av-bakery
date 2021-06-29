@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <title>AV Bakery: Edit Customer Page</title>
+    <style>
+      .form-submit {
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <h1>Auroville Bakery Order Management</h1>
+      <h2>View Customer</h2>
+    </div>
+
+    <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+    
+    <section class="form-group">
+      <ul class="form-fields left">
+        <li>
+          <label for="description">Name:</label>
+          <span><%= customer.name %></span>
+        </li>
+        <li>
+          <label for="description">Phone:</label>
+          <span><%= customer.phone %></span>
+        </li>
+        <li>
+            <label for="description">Community:</label>
+            <span><%= customer.community %></span>
+          </li>
+    </ul>
+      <ul class="form-group right">
+        <li>
+            <label for="description">Account:</label>
+            <span><%= customer.account %></span>
+          </li>
+          <li>
+            <label for="description">Email:</label>
+            <span><%= customer.email %></span>
+          </li>
+          <li>
+            <label for="description">Notes:</label>
+            <span><%= customer.notes %></span>
+          </li>
+      </ul>
+    </section>
+
+    <span id="requestError" style="display: block; margin-top: 10px" class="alert"></span>
+    <span id="responseError" style="display: block; margin-top: 10px" class="warning"></span>
+    <span id="responseSuccess" style="display: block; margin-top: 10px" class="success"></span>
+
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/app.js"></script>
+</html>
