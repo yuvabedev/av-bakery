@@ -21,6 +21,7 @@
 
     <form action="/customerSave" method="post">
       <section class="form-group">
+        <% var customer = data[0];%>
         <p>Please use the form to make changes to customer profile</p>
         <ul class="form-fields">
           <input type="hidden" name="customerId" id="customerId" value="<%= customer.id %>"/>
