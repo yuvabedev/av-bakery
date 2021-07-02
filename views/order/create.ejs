@@ -10,6 +10,41 @@
       .form-submit {
         line-height: 1.4;
       }
+
+      .parent {
+         display: flex;
+         align-items: center;
+         background: #f6ddce;
+       }
+
+      .parent > div {
+        flex: 1;
+      }
+      
+      #orderTable {
+        display: flex; /* aligns all child elements (flex items) in a row */
+        margin-top: 25px;
+        flex-direction: column;
+        align-self: center;
+        width: 1000px;
+        border: 1px solid #894e3f;
+      }
+      .header {
+        background-color: #f6ddce;
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        font-size: 1.1em;
+      }
+
+      .col {
+        width: 200px;
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
     </style>
   </head>
 
@@ -21,37 +56,54 @@
 
     <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
     
-    <section class="form-group">
-      <ul class="form-fields left">
-        <li>
+    <section class="parent">
+      <% var customer = data[0]; %>
+      <div>
+        <div class="row">
           <label for="description">Name:</label>
           <span><%= customer.name %></span>
-        </li>
-        <li>
+        </div>
+        <div class="row">
           <label for="description">Phone:</label>
           <span><%= customer.phone %></span>
-        </li>
-        <li>
+        </div>
+        <div class="row">
             <label for="description">Community:</label>
             <span><%= customer.community %></span>
-          </li>
-    </ul>
-      <ul class="form-group right">
-        <li>
+        </div>
+    </div>
+      <div>
+        <div class="row">
             <label for="description">Account:</label>
             <span><%= customer.account %></span>
-          </li>
-          <li>
+          </div>
+          <div class="row">
             <label for="description">Email:</label>
             <span><%= customer.email %></span>
-          </li>
-          <li>
+          </div>
+          <div class="row">
             <label for="description">Notes:</label>
             <span><%= customer.notes %></span>
-          </li>
-      </ul>
+          </div>
+      </div>
     </section>
 
+    <section id="orderTable" class="form-group form-fields" style="white-space:nowrap;">
+      <ul class="header">
+        <li class="col">Product</li>
+        <li class="col">Quantity</li>
+        <li class="col">Start Date</li>
+        <li class="col">Number of Deliveries</li>
+        <li>Delivery Location</li>
+      </ul>
+      <ul>
+        <li style="display:inline"><%- activeProductsDropdown %></li>
+        <li style="display:inline"><input type="text" name="quantity" id="quantity" placeholder="Quantity of bread" class="text-input"></li>
+        <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
+        <li style="display:inline"><input type="text" name="numberOfDeliveries" id="numberOfDeliveries" placeholder="Number of Deliveries" class="text-input"></li>
+        <li style="display:inline"><input type="text" name="deliveryLocation" id="deliveryLocation" placeholder="Delivery Location" class="text-input"></li>
+      </ul>
+    </section>
   </body>
 
   <script src="scripts/jquery.js"></script>

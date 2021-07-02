@@ -11,8 +11,8 @@ function searchCustomer(searchText, searchBy, callback) {
   executeQuery(formattedSql, callback);
 }
 
-function fetchCustomer(value, getBy, callback) {
-  var sql = getQueryForFetch(getBy);
+function fetchCustomer(value, fetchBy, callback) {
+  var sql = getQueryForFetch(fetchBy);
   var formattedSql = util.format(sql, value);
   executeQuery(formattedSql, callback);
 }
@@ -38,8 +38,8 @@ function getQueryForUpdate(customer) {
   return util.format(updateCustomerSql, customer.name, customer.account, customer.community, customer.phone, customer.email, customer.notes, customer.id);
 }
 
-function getQueryForFetch(getBy) {
-  return util.format("SELECT * FROM `customer` WHERE `%s` = '%s'", getBy);
+function getQueryForFetch(fetchBy) {
+  return util.format("SELECT * FROM `customer` WHERE `%s` = '%s'", fetchBy);
 }
 
 function getQueryForSearchBy(searchBy) {

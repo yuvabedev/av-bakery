@@ -120,6 +120,32 @@ code {
   background: #f2f2f2;
 }
 
+.form-fields select {
+  box-sizing: border-box;
+  padding: 0.6em 0.8em;
+  color: #999;
+  background: #f7f7f7;
+  border: 1px solid #e1e1e1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9em;
+  text-decoration: none;
+  line-height: normal;
+  max-height: 3em;
+}
+
+.form-fields select:focus {
+  color: #333;
+  border: 1px solid #C17CCF;
+  outline: none;
+  background: #f2f2f2;
+}
+
+.form-fields select {
+  flex: 1 0 230px;
+}
+
 input[type='radio' i] {
   background-color: initial;
   cursor: default;
