@@ -19,7 +19,7 @@ function createCustomerOrder(customerId) {
 
 $('#saveOrderSchedule').click(function () {
   console.log("Saving order schedule...");
-
+  $('#saveMessage').html('').removeClass('error warning success');
   orderSchedule = {};
   orderSchedule.productName = $('#breads').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').val();

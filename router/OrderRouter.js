@@ -1,4 +1,5 @@
 var express = require('express');
+var moment = require('moment');
 
 var util = require('util');
 
@@ -11,6 +12,8 @@ var customerService = require('../service/CustomerService');
 var productService = require('../service/ProductService');
 var orderService = require('../service/OrderService');
 var callbackHelper = require('./CallbackHelper');
+
+var DATE_FORMAT = "DD/MM/YYYY";
 
 var requestError = {};
 var requestData = {};
@@ -109,7 +112,7 @@ function createDeliveryScheduleDropdown(error, data) {
 
   function validateOrderSchedule(orderSchedule) {
     if (!callbackHelper.hasValue(orderSchedule.productName)) {
-      requestError = 'Please select a product from the drop down.';
+      requestError = 'Please select product from the drop down.';
       return false;
     }
     if (!callbackHelper.hasValue(orderSchedule.quantity)) {
@@ -121,15 +124,27 @@ function createDeliveryScheduleDropdown(error, data) {
       return false;
     }
     if (!callbackHelper.hasValue(orderSchedule.startDate)) {
-      requestError = 'Please enter a start date.';
+      requestError = 'Please enter delivery start date.';
       return false;
     }
+    if (!moment(orderSchedule.startDate, DATE_FORMAT).isValid()) {
+      requestError = 'Delivery start date is not valid. It must be in the format dd/mm/yyyy';
+      return false;
+    }
+
+    var deliveryDate  = moment(orderSchedule.startDate, DATE_FORMAT);
+
+    if (!deliveryDate.isAfter()) {
+      requestError = 'Delivery start date must be a future date';
+      return false;
+    }
+
     if (!callbackHelper.hasValue(orderSchedule.deliveryLocation)) {
-      requestError = 'Please select a delivery location from the drop down.';
+      requestError = 'Please select delivery location from the drop down.';
       return false;
     }
     if (!callbackHelper.hasValue(orderSchedule.deliverySchedule)) {
-      requestError = 'Please select a delivery schedule from the drop down.';
+      requestError = 'Please select delivery schedule from the drop down.';
       return false;
     }
     return true;
