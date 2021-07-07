@@ -15,7 +15,7 @@ var callbackHelper = require('./CallbackHelper');
 var requestError = {};
 var requestData = {};
 
-var defaultOptionForDropDown = '<option selected> Please Select...</option>'
+var defaultOptionForDropDown = '<option value="" selected> Please Select...</option>'
 
 /**
  * handles http request to get a customer with a given id. 
@@ -44,7 +44,7 @@ function createActiveProductDropdown(error, data) {
  activeProducts.forEach(function(product) {
    //console.log(product);
    var option = '<option value="%s">%s</option>';
-    option = util.format(option, product.id, product.name);
+    option = util.format(option, product.name, product.name);
     dropDown = dropDown + option;
  });
  dropDown = dropDown + "</select>";
@@ -86,9 +86,19 @@ function createDeliveryScheduleDropdown(error, data) {
   router.post('/orderScheduleSave', (request, response) => {
     httpResponse = response;
     
-    var productName = request.body.productName;
+    var orderSchedule = {};
+    orderSchedule.productName= request.body.productName;
+    orderSchedule.quantity= request.body.quantity;
+    orderSchedule.startDate= request.body.startDate;
+    orderSchedule.deliverySchedule= request.body.deliverySchedule;
+    orderSchedule.deliveryLocation= request.body.deliveryLocation;
 
-    console.log(request.body);
+    console.log(orderSchedule);
+    
+    if (!validateOrderSchedule(orderSchedule)) {
+      response.status(400).send(requestError);
+      return;      
+    }
 
     //console.log(util.format('%s: Creating order for customer id: %s', filename, customerId));
   
@@ -96,5 +106,33 @@ function createDeliveryScheduleDropdown(error, data) {
     //callbackHelper.setView("order/create");
   
   });
+
+  function validateOrderSchedule(orderSchedule) {
+    if (!callbackHelper.hasValue(orderSchedule.productName)) {
+      requestError = 'Please select a product from the drop down.';
+      return false;
+    }
+    if (!callbackHelper.hasValue(orderSchedule.quantity)) {
+      requestError = 'Please enter quantity.';
+      return false;
+    }
+    if (isNaN(orderSchedule.quantity)) {
+      requestError = 'Quantity can only be a number';
+      return false;
+    }
+    if (!callbackHelper.hasValue(orderSchedule.startDate)) {
+      requestError = 'Please enter a start date.';
+      return false;
+    }
+    if (!callbackHelper.hasValue(orderSchedule.deliveryLocation)) {
+      requestError = 'Please select a delivery location from the drop down.';
+      return false;
+    }
+    if (!callbackHelper.hasValue(orderSchedule.deliverySchedule)) {
+      requestError = 'Please select a delivery schedule from the drop down.';
+      return false;
+    }
+    return true;
+  }
 
 module.exports = router;

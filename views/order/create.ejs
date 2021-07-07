@@ -60,7 +60,7 @@
       <h2>Create Order</h2>
     </div>
 
-    <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+    
     
     <section class="parent">
       <% var customer = data[0]; %>
@@ -111,7 +111,7 @@
         <li style="display:inline; margin-left: 20px;"><button id="saveOrderSchedule" class="customer-button">Save</button></li>
         <li style="display:inline; margin-left: 10px;"><button id="saveOrderSchedule" class="customer-button">Cancel</button></li>
       </ul>
-    </section>
+      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>    </section>
   </body>
 
   <script src="scripts/jquery.js"></script>

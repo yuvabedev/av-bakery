@@ -21,11 +21,11 @@ $('#saveOrderSchedule').click(function () {
   console.log("Saving order schedule...");
 
   orderSchedule = {};
-  orderSchedule.productName = $("input[name='breads']:checked").val();
+  orderSchedule.productName = $('#breads').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').val();
   orderSchedule.startDate = $('#startDate').val();
-  orderSchedule.frequency = $("input[name='deliverySchedule']:checked").val();
-  orderSchedule.location = $("input[name='deliveryLocation']:checked").val();
+  orderSchedule.deliverySchedule = $('#deliverySchedule').find(":selected").val();
+  orderSchedule.deliveryLocation = $('#deliveryLocation').find(":selected").val();
   saveOrderSchedule(orderSchedule);
 });
 
@@ -39,7 +39,11 @@ function saveOrderSchedule(orderSchedule) {
     .fail(function (e) {
       console.log(e);
       if (e.status == 400) {
-        displayError(e.responseText);
+        displayError(e.responseText, "#saveMessage");
       }
     });
+}
+
+function createOrderLines(orderSchedule) {
+
 }

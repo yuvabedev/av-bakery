@@ -23,14 +23,15 @@ function searchCustomers(criteria) {
     .fail(function (e) {
       console.log(e);
       if (e.status == 400) {
-        displayError(e.responseText);
+        displayError(e.responseText, "#searchMessage");
       }
     });
 }
 
-function displayError(errorMessage) {
-  $('#searchMessage').html(errorMessage).addClass('error');
+function displayError(errorMessage, divId) {
+  $(divId).html(errorMessage).addClass('error');
 }
+
 function clearCustomeSearch() {
   hideMessages();
   console.log('Clearing customer search data....');
