@@ -27,3 +27,5 @@ app.use(express.static(path.join(__dirname, './static')));
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Express server listening on port ${port}!`);
 });
+
+require('./global.js');

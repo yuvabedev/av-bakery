@@ -33,15 +33,15 @@ var defaultOptionForDropDown = '<option value="" selected> Please Select...</opt
   callbackHelper.setResponse(response);
   callbackHelper.setView("order/create");
 
-  productService.getAllActiveProducts(createActiveProductDropdown.bind({ error: requestError, data: requestData }));
-  orderService.getDeliverySchedule(createDeliveryScheduleDropdown.bind({ error: requestError, data: requestData }));
-  orderService.getDeliveryLocation(createDeliveryLocationDropdown.bind({ error: requestError, data: requestData }));
+  createActiveProductDropdown(null);
+  createDeliveryScheduleDropdown(null);
+  createDeliveryLocationDropdown(null);
   customerService.fetchCustomer(customerId, 'id', callbackHelper.renderNextView.bind({ error: requestError, data: requestData }));
 });
 
 
-function createActiveProductDropdown(error, data) {
- var activeProducts = data;
+function createActiveProductDropdown(selectedProduct) {
+  var activeProducts = global.activeProducts;
  var dropDown = '<select class="select-menu" name="breads" id="breads">';
  dropDown = dropDown + defaultOptionForDropDown;
  activeProducts.forEach(function(product) {
@@ -55,10 +55,10 @@ function createActiveProductDropdown(error, data) {
 }
 
 function createDeliveryScheduleDropdown(error, data) {
-  var deliverSchedule = data;
+  var deliverySchedule = global.deliverySchedule;
   var dropDown = '<select class="select-menu" name="deliverySchedule" id="deliverySchedule">';
   dropDown = dropDown + defaultOptionForDropDown;
-  deliverSchedule.forEach(function(schedule) {
+  deliverySchedule.forEach(function(schedule) {
     var option = '<option value="%s">%s</option>';
     option = util.format(option, schedule.total_deliveries, schedule.description);
     dropDown = dropDown + option;
@@ -67,11 +67,11 @@ function createDeliveryScheduleDropdown(error, data) {
   httpResponse.locals.deliveryScheduleDropdown  = dropDown;
  }
 
- function createDeliveryLocationDropdown(error, data) {
-  var deliverLocation = data;
+ function createDeliveryLocationDropdown(selectedLocation) {
+  var deliverLocations = global.deliveryLocations;
   var dropDown = '<select class="select-menu" name="deliveryLocation" id="deliveryLocation">';
   dropDown = dropDown + defaultOptionForDropDown;
-  deliverLocation.forEach(function(location) {
+  deliverLocations.forEach(function(location) {
     var option = '<option value="%s">%s</option>';
     option = util.format(option, location.name, location.name);
     dropDown = dropDown + option;
@@ -86,7 +86,7 @@ function createDeliveryScheduleDropdown(error, data) {
  * The id provided as query param: /customerEdit?id={id}
  * returns the json representing customer object
  */
-  router.post('/orderScheduleSave', (request, response) => {
+  router.post('/orderLineItemsGenerate', (request, response) => {
     httpResponse = response;
     
     var orderSchedule = {};

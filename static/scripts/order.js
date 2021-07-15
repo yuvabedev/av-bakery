@@ -17,22 +17,23 @@ function createCustomerOrder(customerId) {
 }
 
 
-$('#saveOrderSchedule').click(function () {
+$('#generateOrderLineItems').click(function () {
   console.log("Saving order schedule...");
   $('#saveMessage').html('').removeClass('error warning success');
   orderSchedule = {};
+  orderSchedule.customerId =  $('#customerId').val();
   orderSchedule.productName = $('#breads').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').val();
   orderSchedule.startDate = $('#startDate').val();
   orderSchedule.deliverySchedule = $('#deliverySchedule').find(":selected").val();
   orderSchedule.deliveryLocation = $('#deliveryLocation').find(":selected").val();
-  saveOrderSchedule(orderSchedule);
+  generateOrderLines(orderSchedule);
 });
 
-function saveOrderSchedule(orderSchedule) {
+function generateOrderLines(orderSchedule) {
   console.log("Saving order schedule...");
   console.log(orderSchedule);
-  $.post('orderScheduleSave', orderSchedule)
+  $.post('orderLineItemsGenerate', orderSchedule)
     .done(function (data) {
       console.log('Order Schedule Saved!!');
     })
@@ -44,6 +45,10 @@ function saveOrderSchedule(orderSchedule) {
     });
 }
 
-function createOrderLines(orderSchedule) {
+function appendLineItemsToOrderSchedule(orderSchedule) {
+      
+}
 
+function getOrderLineFieldInput(columnValue) {
+  return `<div class="col">${columnValue}</div>`;
 }
