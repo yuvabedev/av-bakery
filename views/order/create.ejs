@@ -92,6 +92,7 @@
             <span><%= customer.notes %></span>
           </div>
       </div>
+      <input type="hidden" id="customerId" value="<%=customer.id%>" />
     </section>
 
     <section id="orderTable" class="form-group form-fields" style="white-space:nowrap;">
@@ -108,10 +109,12 @@
         <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
         <li style="display:inline"><%- deliveryScheduleDropdown %></li>
         <li style="display:inline"><%- deliveryLocationDropdown %></li>
-        <li style="display:inline; margin-left: 20px;"><button id="saveOrderSchedule" class="customer-button">Save</button></li>
-        <li style="display:inline; margin-left: 10px;"><button id="saveOrderSchedule" class="customer-button">Cancel</button></li>
+        <li style="display:inline; margin-left: 20px;"><button id="generateOrderLineItems" class="customer-button">Generate</button></li>
+        <li style="display:inline; margin-left: 10px;"><button id="cancelOrderSchedule" class="customer-button">Cancel</button></li>
       </ul>
-      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>    </section>
+      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span> 
+      <div id="orderLineItems"></div>   
+    </section>
   </body>
 
   <script src="scripts/jquery.js"></script>
