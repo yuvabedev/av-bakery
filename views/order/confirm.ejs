@@ -29,7 +29,6 @@
         width: 1200px;
         border: 1px solid #894e3f;
       }
-      
       .header {
         background-color: #f6ddce;
         width: auto;
@@ -50,19 +49,6 @@
       .select-menu {
         text-align: center;
         width: 200px;
-      }
-
-      .orderLineItems  {
-        display: flex;
-        flex-flow: row wrap;
-      }
-
-      .orderLineItems ul {
-        margin: 0 0 0.5em;
-      }
-      .orderLineItem {
-        width: 200px;
-        text-align:left;      
       }
 
     </style>
@@ -113,22 +99,18 @@
       <ul class="header">
         <li class="col">Product</li>
         <li class="col">Quantity</li>
-        <li class="col">Delivery Date</li>
+        <li class="col">Delivery Start Date</li>
         <li class="col">Delivery Schedule</li>
         <li class="col">Delivery Location</li>
       </ul>
       <ul>
-        <li style="display:inline"><%- activeProductsDropdown %></li>
-        <li style="display:inline"><input type="text" name="quantity" id="quantity" placeholder="Quantity of bread" class="text-input"></li>
-        <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
-        <li style="display:inline"><%- deliveryScheduleDropdown %></li>
-        <li style="display:inline"><%- deliveryLocationDropdown %></li>
-        <li style="display:inline; margin-left: 20px;"><button id="generateOrderLineItems" class="customer-button">Generate</button></li>
-        <li style="display:inline; margin-left: 10px;"><button id="cancelOrderSchedule" class="customer-button">Cancel</button></li>
+        <li style="display:inline"><span><%= orderSchedule.productName %></span></li>
+        <li style="display:inline"><span><%= orderSchedule.quantity %></span></li>
+        <li style="display:inline"><span><%= orderSchedule.startDate %></span></li>
+        <li style="display:inline"><span><%= orderSchedule.deliverySchedule %></span></li>
+        <li style="display:inline"><span><%= orderSchedule.deliveryLocation %></span></li>
       </ul>
-      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span> 
-      <div id="orderLineItems"></div>   
-    </section>
+      <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>    </section>
   </body>
 
   <script src="scripts/jquery.js"></script>

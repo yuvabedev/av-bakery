@@ -45,7 +45,6 @@ function createActiveProductDropdown(selectedProduct) {
  var dropDown = '<select class="select-menu" name="breads" id="breads">';
  dropDown = dropDown + defaultOptionForDropDown;
  activeProducts.forEach(function(product) {
-   //console.log(product);
    var option = '<option value="%s">%s</option>';
     option = util.format(option, product.name, product.name);
     dropDown = dropDown + option;
@@ -96,18 +95,14 @@ function createDeliveryScheduleDropdown(error, data) {
     orderSchedule.deliverySchedule= request.body.deliverySchedule;
     orderSchedule.deliveryLocation= request.body.deliveryLocation;
 
-    console.log(orderSchedule);
-    
     if (!validateOrderSchedule(orderSchedule)) {
       response.status(400).send(requestError);
       return;      
     }
 
-    //console.log(util.format('%s: Creating order for customer id: %s', filename, customerId));
-  
-    //callbackHelper.setResponse(response);
-    //callbackHelper.setView("order/create");
-  
+    var orderLineItems = generateOrderLineItems(orderSchedule);
+    var orderLineItemsUL = convertLineItemsToHTML(orderLineItems);
+    response.status(201).send(orderLineItemsUL);  
   });
 
   function validateOrderSchedule(orderSchedule) {
@@ -150,4 +145,50 @@ function createDeliveryScheduleDropdown(error, data) {
     return true;
   }
 
+ /**
+  * Using order schedule creates an array of line items for the schedule
+  * The number of line items = orderSchedule.deliverySchedule
+  * @param {*} orderSchedule 
+  * @returns 
+  */
+  function generateOrderLineItems(orderSchedule) {
+    var totalDeliveries = Number(orderSchedule.deliverySchedule);
+    var orderLineItems = [];
+    for (var currentDelivery = 0 ; currentDelivery <totalDeliveries; currentDelivery++) {
+      var orderLineItem = {};
+      orderLineItem.productName = orderSchedule.productName;
+      orderLineItem.quantity = orderSchedule.quantity;
+      var numDaysToAdd = currentDelivery * 7;
+      var nextDeliveryDate = moment(orderSchedule.startDate, DATE_FORMAT).add(numDaysToAdd, 'days').format(DATE_FORMAT);
+      orderLineItem.deliveryDate = nextDeliveryDate;
+      orderLineItem.deliveryLocation = orderSchedule.deliveryLocation;
+      orderLineItems.push(orderLineItem);
+    }
+    return orderLineItems;
+ }
+
+ function convertLineItemsToHTML(orderLineItems) {
+   var orderLineItemsUL = "";
+   var productNameLi = "<li style='display:inline' class='orderLineItem'>%s</li>";
+   //var quantityLI = "<li style='display:inline'><input type='text' name='quantity' id='quantity' class='text-input' value='%s' /></li>";
+   var quantityLI = "<li style='display:inline' class='orderLineItem'>%s</li>";
+   var deliveryDateLI = "<li style='display:inline' class='orderLineItem'>%s</li>";
+   var deliveryLocationLI = "<li style='display:inline' class='orderLineItem'>%s</li>";
+   var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:removeOrderLineItem(this)' class='customer-button'>Remove</button></li>";
+   orderLineItems.forEach(function(orderLineItem) {
+     console.log("Generating UL for Order Line Item:");
+     console.log(orderLineItem);
+     var orderLineItemUL = "<ul class='orderLineItems'>%s</ul>";
+     var itemsList = "";
+     itemsList += util.format(productNameLi, orderLineItem.productName);
+     itemsList += util.format(quantityLI, orderLineItem.quantity);
+     itemsList += util.format(deliveryDateLI, orderLineItem.deliveryDate);
+     itemsList += util.format(deliveryLocationLI, orderLineItem.deliveryLocation);
+     itemsList += deleteOrderLineItemButtonLi;
+     orderLineItemUL = util.format(orderLineItemUL, itemsList);
+     console.log("UL Generated:" + orderLineItemUL);
+     orderLineItemsUL += orderLineItemUL;
+   });
+   return orderLineItemsUL;
+ }
 module.exports = router;

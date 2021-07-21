@@ -35,7 +35,9 @@ function generateOrderLines(orderSchedule) {
   console.log(orderSchedule);
   $.post('orderLineItemsGenerate', orderSchedule)
     .done(function (data) {
-      console.log('Order Schedule Saved!!');
+      console.log('Order Line Items generated...');
+      //  console.log(data);
+      appendLineItemsToOrderSchedule(data);
     })
     .fail(function (e) {
       console.log(e);
@@ -45,10 +47,12 @@ function generateOrderLines(orderSchedule) {
     });
 }
 
-function appendLineItemsToOrderSchedule(orderSchedule) {
-      
+function appendLineItemsToOrderSchedule(orderLineItemsUL) {
+      $(orderLineItemsUL).appendTo("#orderLineItems");
 }
 
-function getOrderLineFieldInput(columnValue) {
-  return `<div class="col">${columnValue}</div>`;
+function removeOrderLineItem(currentElement) {
+    //console.log($(currentElement).attr("class").split(/\s+/));
+    var ulElement = $(currentElement).closest('ul');
+    ulElement.remove();
 }
