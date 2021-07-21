@@ -25,6 +25,18 @@ function getQueryForDeliveryLocation() {
     return util.format("SELECT * FROM `delivery_location` ORDER BY name");
 }
 
+function saveOrderSchedule(orderSchedule) {
+  var orderScheduleInsertSql = getQueryForSaveOrderSchedule(orderSchedule);
+  console.log(orderScheduleInsertSql);
+}
+
+function getQueryForSaveOrderSchedule(orderSchedule) {
+  var saveOrderScheduleSql = "INSERT INTO order_schedule (customer_id, product_id, product_name, quantity, start_date, delivery_location, total_deliveries, status, notes)\
+   VALUES ('%s', '%s', '%s', %s, '%s', '%s', %s, '%s', '%s');"
+   return util.format(saveOrderScheduleSql, orderSchedule.customerId, orderSchedule.productId, orderSchedule.productName, orderSchedule.quantity,
+     orderSchedule.startDate, orderSchedule.deliveryLocation, orderSchedule.totalDeliveries, orderSchedule.status, orderSchedule.notes);
+}
+
 function executeQuery(sql, callback) {
     console.log(util.format('%s: Executing SQL: %s', filename, sql));
     connection.query(sql, function (error, results) {
@@ -39,4 +51,5 @@ function executeQuery(sql, callback) {
   module.exports = {
     getDeliverySchedule,
     getDeliveryLocation,
+    saveOrderSchedule,
   };

@@ -9,6 +9,10 @@ function hasNumber(myString) {
   return /\d/.test(myString);
 }
 
+function convertToEmptyIfUndefined(object) {
+  if (!hasValue(object)) return '';
+  return object;
+}
 function hasValue(someVariable) {
   if (typeof someVariable !== 'undefined') {
     if (someVariable.trim().length > 0) return true;
@@ -50,6 +54,7 @@ function setView(view) {
 module.exports = {
   hasNumber,
   hasValue,
+  convertToEmptyIfUndefined,
   sendResponse,
   renderNextView,
   redirectRequest,

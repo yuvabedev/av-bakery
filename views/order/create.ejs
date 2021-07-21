@@ -15,6 +15,7 @@
          display: flex;
          align-items: center;
          background: #f6ddce;
+         width: 1200px;
        }
 
       .parent > div {
@@ -38,13 +39,24 @@
         font-size: 1.1em;
       }
 
+      .headerlabel {
+        display: inline-block;
+        width: 100px;
+        margin: 0 auto;
+        font-size: large;
+      }
+
+      .headertext {
+        font-size: large;
+      }
+
       .col {
         width: 200px;
         text-align: center;
       }
       .row {
-        display: flex;
-        flex-direction: row;
+        width: 50%;
+        margin: 0 auto;
       }
 
       .select-menu {
@@ -80,30 +92,30 @@
       <% var customer = data[0]; %>
       <div>
         <div class="row">
-          <label for="description">Name:</label>
-          <span><%= customer.name %></span>
+          <label for="description" class="headerlabel">Name:</label>
+          <span class="headertext"><%= customer.name %></span>
         </div>
         <div class="row">
-          <label for="description">Phone:</label>
-          <span><%= customer.phone %></span>
+          <label for="description" class="headerlabel">Phone:</label>
+          <span class="headertext"><%= customer.phone %></span>
         </div>
         <div class="row">
-            <label for="description">Community:</label>
-            <span><%= customer.community %></span>
+            <label for="description" class="headerlabel">Community:</label>
+            <span class="headertext"><%= customer.community %></span>
         </div>
     </div>
       <div>
         <div class="row">
-            <label for="description">Account:</label>
-            <span><%= customer.account %></span>
+            <label for="description" class="headerlabel">Account:</label>
+            <span class="headertext"><%= customer.account %></span>
           </div>
           <div class="row">
-            <label for="description">Email:</label>
-            <span><%= customer.email %></span>
+            <label for="description" class="headerlabel">Email:</label>
+            <span class="headertext"><%= customer.email %></span>
           </div>
           <div class="row">
-            <label for="description">Notes:</label>
-            <span><%= customer.notes %></span>
+            <label for="description" class="headerlabel">Notes:</label>
+            <span class="headertext"><%= customer.notes %></span>
           </div>
       </div>
       <input type="hidden" id="customerId" value="<%=customer.id%>" />
@@ -127,7 +139,9 @@
         <li style="display:inline; margin-left: 10px;"><button id="cancelOrderSchedule" class="customer-button">Cancel</button></li>
       </ul>
       <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span> 
-      <div id="orderLineItems"></div>   
+      <div id="orderLineItems">
+        <button id="confirmOrderSchedule" class="customer-button">Confirm Order</button></li>
+      </div>   
     </section>
   </body>
 

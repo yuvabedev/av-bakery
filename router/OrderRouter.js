@@ -46,7 +46,7 @@ function createActiveProductDropdown(selectedProduct) {
  dropDown = dropDown + defaultOptionForDropDown;
  activeProducts.forEach(function(product) {
    var option = '<option value="%s">%s</option>';
-    option = util.format(option, product.name, product.name);
+    option = util.format(option, product.id, product.name);
     dropDown = dropDown + option;
  });
  dropDown = dropDown + "</select>";
@@ -176,8 +176,6 @@ function createDeliveryScheduleDropdown(error, data) {
    var deliveryLocationLI = "<li style='display:inline' class='orderLineItem'>%s</li>";
    var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:removeOrderLineItem(this)' class='customer-button'>Remove</button></li>";
    orderLineItems.forEach(function(orderLineItem) {
-     console.log("Generating UL for Order Line Item:");
-     console.log(orderLineItem);
      var orderLineItemUL = "<ul class='orderLineItems'>%s</ul>";
      var itemsList = "";
      itemsList += util.format(productNameLi, orderLineItem.productName);
@@ -186,9 +184,30 @@ function createDeliveryScheduleDropdown(error, data) {
      itemsList += util.format(deliveryLocationLI, orderLineItem.deliveryLocation);
      itemsList += deleteOrderLineItemButtonLi;
      orderLineItemUL = util.format(orderLineItemUL, itemsList);
-     console.log("UL Generated:" + orderLineItemUL);
+     //console.log("UL Generated:" + orderLineItemUL);
      orderLineItemsUL += orderLineItemUL;
    });
    return orderLineItemsUL;
  }
+ /**
+ * handles http request to get a customer with a given id. 
+ * The id provided as query param: /customerEdit?id={id}
+ * returns the json representing customer object
+ */
+  router.post('/saveOrderSchedule', (request, response) => {
+    httpResponse = response;
+    console.log("saving order schedule...");
+    var orderSchedule = {};
+    orderSchedule.customerId= request.body.customerId;
+    orderSchedule.productId= request.body.productId;
+    orderSchedule.productName= request.body.productName;
+    orderSchedule.quantity= request.body.quantity;
+    orderSchedule.startDate = moment(request.body.startDate, DATE_FORMAT).format('YYYY-MM-DD');;
+    orderSchedule.totalDeliveries= request.body.deliverySchedule;
+    orderSchedule.deliveryLocation= request.body.deliveryLocation;
+    orderSchedule.notes = callbackHelper.convertToEmptyIfUndefined(request.body.notes);
+    orderSchedule.status = 'ACTIVE';
+    orderService.saveOrderSchedule(orderSchedule);
+  });
+
 module.exports = router;

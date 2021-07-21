@@ -18,25 +18,33 @@ function createCustomerOrder(customerId) {
 
 
 $('#generateOrderLineItems').click(function () {
-  console.log("Saving order schedule...");
   $('#saveMessage').html('').removeClass('error warning success');
+  var orderLineItems = $(".orderLineItems");
+  console.log("removing existing order line items....");
+  orderLineItems.remove();
+
+  console.log("Creating new order schedule....");
+  var orderSchedule = getOrderSchedule();
+  generateOrderLines(orderSchedule);
+});
+
+function getOrderSchedule() {
   orderSchedule = {};
   orderSchedule.customerId =  $('#customerId').val();
-  orderSchedule.productName = $('#breads').find(":selected").val();
+  orderSchedule.productName = $('#breads').find(":selected").text()
+  orderSchedule.productId = $('#breads').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').val();
   orderSchedule.startDate = $('#startDate').val();
   orderSchedule.deliverySchedule = $('#deliverySchedule').find(":selected").val();
   orderSchedule.deliveryLocation = $('#deliveryLocation').find(":selected").val();
-  generateOrderLines(orderSchedule);
-});
+  return orderSchedule;
+}
 
 function generateOrderLines(orderSchedule) {
-  console.log("Saving order schedule...");
-  console.log(orderSchedule);
+  console.log("Generating line items from order schedule...");
   $.post('orderLineItemsGenerate', orderSchedule)
     .done(function (data) {
       console.log('Order Line Items generated...');
-      //  console.log(data);
       appendLineItemsToOrderSchedule(data);
     })
     .fail(function (e) {
@@ -48,11 +56,34 @@ function generateOrderLines(orderSchedule) {
 }
 
 function appendLineItemsToOrderSchedule(orderLineItemsUL) {
-      $(orderLineItemsUL).appendTo("#orderLineItems");
+      $(orderLineItemsUL).prependTo("#orderLineItems");
 }
 
 function removeOrderLineItem(currentElement) {
     //console.log($(currentElement).attr("class").split(/\s+/));
     var ulElement = $(currentElement).closest('ul');
     ulElement.remove();
+}
+
+$("#confirmOrderSchedule").click(function() {
+  var orderSchedule = getOrderSchedule();
+  saveOrderSchedule(orderSchedule);
+});
+
+function saveOrderSchedule(orderSchedule) {
+  console.log("Saving order schedule...");
+  $.post('saveOrderSchedule', orderSchedule)
+    .done(function (data) {
+      console.log('Order Schedule Saved With id');
+    })
+    .fail(function (e) {
+      console.log(e);
+      if (e.status == 400) {
+        displayError(e.responseText, "#saveMessage");
+      }
+    });
+}
+
+function getOrderLineItems() {
+
 }
