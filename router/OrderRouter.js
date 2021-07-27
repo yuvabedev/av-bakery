@@ -17,6 +17,7 @@ var DATE_FORMAT = "DD/MM/YYYY";
 
 var requestError = {};
 var requestData = {};
+var httpResponse = {};
 
 var defaultOptionForDropDown = '<option value="" selected> Please Select...</option>'
 
@@ -86,8 +87,6 @@ function createDeliveryScheduleDropdown(error, data) {
  * returns the json representing customer object
  */
   router.post('/orderLineItemsGenerate', (request, response) => {
-    httpResponse = response;
-    
     var orderSchedule = {};
     orderSchedule.productName= request.body.productName;
     orderSchedule.quantity= request.body.quantity;
@@ -194,8 +193,8 @@ function createDeliveryScheduleDropdown(error, data) {
  * The id provided as query param: /customerEdit?id={id}
  * returns the json representing customer object
  */
-  router.post('/saveOrderSchedule', (request, response) => {
-    httpResponse = response;
+  router.post('/orderScheduleSave', (request, response) => {
+    callbackHelper.setResponse(response);
     console.log("saving order schedule...");
     var orderSchedule = {};
     orderSchedule.customerId= request.body.customerId;
@@ -203,11 +202,35 @@ function createDeliveryScheduleDropdown(error, data) {
     orderSchedule.productName= request.body.productName;
     orderSchedule.quantity= request.body.quantity;
     orderSchedule.startDate = moment(request.body.startDate, DATE_FORMAT).format('YYYY-MM-DD');;
-    orderSchedule.totalDeliveries= request.body.deliverySchedule;
+    orderSchedule.totalDeliveries= request.body.totalDeliveries;
     orderSchedule.deliveryLocation= request.body.deliveryLocation;
     orderSchedule.notes = callbackHelper.convertToEmptyIfUndefined(request.body.notes);
     orderSchedule.status = 'ACTIVE';
-    orderService.saveOrderSchedule(orderSchedule);
+    orderService.saveOrderSchedule(orderSchedule, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }))
   });
+
+   /**
+ * handles http request to get a customer with a given id. 
+ * The id provided as query param: /customerEdit?id={id}
+ * returns the json representing customer object
+ */
+    router.post('/orderLineItemsSave', (request, response) => {
+      callbackHelper.setResponse(response);
+      console.log("saving order line items...");
+      var orderLineItems = JSON.parse(request.body.orderLineItems);
+      saveOrderLineItems(orderLineItems);
+      console.log(orderLineItems);
+      
+      response.status(201).send("data");
+    });
+
+    function saveOrderLineItems(orderLineItems) {
+      orderLineItems.forEach(function(orderLineItem) {
+        orderLineItem.notes = callbackHelper.convertToEmptyIfUndefined(orderLineItem.notes);
+        orderLineItem.deliveryDate = moment(orderLineItem.deliveryDate, DATE_FORMAT).format('YYYY-MM-DD');
+        orderLineItem.status = 'ACTIVE';
+        orderService.saveOrderLineItem(orderLineItem, callbackHelper.logSavedObject.bind({ error: requestError, data: requestData }));
+      });
+    }
 
 module.exports = router;

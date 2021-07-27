@@ -39,6 +39,14 @@ function redirectRequest(error, data) {
   httpResponse.redirect(nextRedirect);
 }
 
+function logSavedObject(error, data) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log(data);
+  }
+}
+
 function setResponse (response) {
   httpResponse = response;
 }
@@ -61,4 +69,5 @@ module.exports = {
   setResponse,
   setRedirect,
   setView,
+  logSavedObject,
 };

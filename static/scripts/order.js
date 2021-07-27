@@ -56,25 +56,32 @@ function generateOrderLines(orderSchedule) {
 }
 
 function appendLineItemsToOrderSchedule(orderLineItemsUL) {
-      $(orderLineItemsUL).prependTo("#orderLineItems");
+      var orderLineItemsDiv = $("#orderLineItems");
+      $(orderLineItemsUL).prependTo(orderLineItemsDiv);
+      orderLineItemsDiv.show();
 }
 
 function removeOrderLineItem(currentElement) {
-    //console.log($(currentElement).attr("class").split(/\s+/));
     var ulElement = $(currentElement).closest('ul');
     ulElement.remove();
 }
 
 $("#confirmOrderSchedule").click(function() {
   var orderSchedule = getOrderSchedule();
+
+  //While saving order schedule, total deliveries are being fetched from order line items as user might have deleted few deliveries.
+  var totalDeliveries = $('#orderLineItems').children('ul').length;
+  orderSchedule.totalDeliveries = totalDeliveries;
+
   saveOrderSchedule(orderSchedule);
 });
 
 function saveOrderSchedule(orderSchedule) {
   console.log("Saving order schedule...");
-  $.post('saveOrderSchedule', orderSchedule)
+  $.post('orderScheduleSave', orderSchedule)
     .done(function (data) {
-      console.log('Order Schedule Saved With id');
+      console.log('Order Schedule Saved With id: '  + data.id);
+      saveOrderLineItems(data[0]);
     })
     .fail(function (e) {
       console.log(e);
@@ -84,6 +91,30 @@ function saveOrderSchedule(orderSchedule) {
     });
 }
 
-function getOrderLineItems() {
-
+function saveOrderLineItems(savedOrderSchedule) {
+     var orderLineItems = getOrderLineItems(savedOrderSchedule);
+     $.post('orderLineItemsSave', {"orderLineItems":JSON.stringify(orderLineItems)})
+     .done(function(data) {
+      console.log('Total order line items saved: '  + data.changedRows);
+     })
+     .fail(function (error) {
+         console.log(error);
+     });
+}
+function getOrderLineItems(orderSchedule) {
+  var orderLineItems = [];
+  $('#orderLineItems').children('ul').each(function () {  
+    var orderLineItemAttributes = this.children;
+    var productName = orderLineItemAttributes[0].textContent;
+    var productId = orderSchedule.product_id;
+    var quantity = orderLineItemAttributes[1].textContent;
+    var deliveryDate = orderLineItemAttributes[2].textContent;
+    var deliveryLocation = orderLineItemAttributes[3].textContent;
+    var orderScheduleId = orderSchedule.id;
+    var orderLineItem = {"orderScheduleId": orderScheduleId, "productName" : productName, "productId": productId, "quantity": quantity, 
+                    "deliveryDate" : deliveryDate, "deliveryLocation": deliveryLocation};
+    orderLineItems.push(orderLineItem);
+  });
+  console.log(orderLineItems);
+  return orderLineItems;
 }
