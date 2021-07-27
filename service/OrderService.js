@@ -22,6 +22,17 @@ function returnById(id, callback) {
     executeQuery(getByIdSql, callback);
 } 
 
+function getOrderLineItemsByCustomerId(id, callback) {
+    var sql = getQueryForOrderLineItemsByCustomerId(id);
+    executeQuery(sql, callback);
+}
+
+
+function getQueryForOrderLineItemsByCustomerId(id) {
+  var sql = "SELECT * FROM `order_line` WHERE customer_id = '%s' ORDER BY delivery_date";
+  return util.format(sql, id);
+}
+
 function getQueryForDeliverySchedule() {
     return util.format("SELECT * FROM `delivery_schedule` ORDER BY total_deliveries");
 }
@@ -48,9 +59,9 @@ function getQueryForSaveOrderSchedule(orderSchedule) {
 }
 
 function getQueryForSaveOrderLineItem(orderLineItem) {
-  var saveOrderLineItemSql = "INSERT INTO order_line (order_schedule_id, product_id, product_name, quantity, delivery_date, delivery_location, status)\
-   VALUES ('%s', '%s', '%s', %s, '%s', '%s', '%s');"
-   return util.format(saveOrderLineItemSql, orderLineItem.orderScheduleId, orderLineItem.productId, orderLineItem.productName, orderLineItem.quantity,
+  var saveOrderLineItemSql = "INSERT INTO order_line (order_schedule_id, customer_id, product_id, product_name, quantity, delivery_date, delivery_location, status)\
+   VALUES ('%s', '%s', '%s', '%s', %s, '%s', '%s', '%s');"
+   return util.format(saveOrderLineItemSql, orderLineItem.orderScheduleId, orderLineItem.customerId, orderLineItem.productId, orderLineItem.productName, orderLineItem.quantity,
     orderLineItem.deliveryDate, orderLineItem.deliveryLocation, orderLineItem.status);
 }
 
@@ -83,4 +94,5 @@ function executeQuery(sql, callback) {
     getDeliveryLocation,
     saveOrderSchedule,
     saveOrderLineItem,
+    getOrderLineItemsByCustomerId,
   };

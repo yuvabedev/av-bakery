@@ -96,11 +96,16 @@ function saveOrderLineItems(savedOrderSchedule) {
      $.post('orderLineItemsSave', {"orderLineItems":JSON.stringify(orderLineItems)})
      .done(function(data) {
       console.log('Total order line items saved: '  + data.changedRows);
+      displayOrderManagement(savedOrderSchedule.customer_id);
      })
      .fail(function (error) {
          console.log(error);
      });
-}
+ }
+
+ function displayOrderManagement(customerId) {
+    window.location.href = `/orderManage?customerId=${customerId}`;
+ }
 function getOrderLineItems(orderSchedule) {
   var orderLineItems = [];
   $('#orderLineItems').children('ul').each(function () {  
@@ -111,10 +116,53 @@ function getOrderLineItems(orderSchedule) {
     var deliveryDate = orderLineItemAttributes[2].textContent;
     var deliveryLocation = orderLineItemAttributes[3].textContent;
     var orderScheduleId = orderSchedule.id;
-    var orderLineItem = {"orderScheduleId": orderScheduleId, "productName" : productName, "productId": productId, "quantity": quantity, 
+    var customerId = orderSchedule.customer_id;
+    var orderLineItem = {"orderScheduleId": orderScheduleId, "customerId": customerId, "productName" : productName, "productId": productId, "quantity": quantity, 
                     "deliveryDate" : deliveryDate, "deliveryLocation": deliveryLocation};
     orderLineItems.push(orderLineItem);
   });
   console.log(orderLineItems);
   return orderLineItems;
+}
+
+function loadOrderLineItemsForCustomerId(customerId) {
+  console.log ("getting order line items for customer id : " + customerId);
+  var criteria = {"customerId": customerId};
+  console.log(criteria);
+  $.get('orderLineItems', criteria)
+  .done(function (data) {
+    console.log('Request Success!!');
+    console.log(data);
+    displayOrderLines(data);
+  })
+  .fail(function (e) {
+    console.log(e);
+    if (e.status == 400) {
+      displayError(e.responseText, "#searchMessage");
+    }
+  });
+}
+
+function displayOrderLines(orderLines) {
+  if (orderLines.length < 1) {
+    $('#loadMessage').html('No Orders Found').addClass('warning');
+  } else {
+    $('#loadMessage').html(`${orderLines.length} Orders Found`).addClass('success');
+  }
+
+  var orderLineItemsList = "";
+
+  for (index in orderLines) {
+    var orderLine = orderLines[index];
+    var orderLineLI = "";
+    var productNameLI = `<li style='display:inline' class='orderLineItem'>${orderLine.product_name}</li>`;
+    var quantityLI = `<li style='display:inline' class='orderLineItem'>${orderLine.quantity}</li>`;
+    var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${orderLine.delivery_date}</li>`;
+    var deliveryLocationLI = `<li style='display:inline' class='orderLineItem'>${orderLine.delivery_location}</li>`;
+    var orderLineLI = productNameLI + quantityLI + deliveryDateLI + deliveryLocationLI;
+    var orderLineItemUL = `<ul class='orderLineItems'>${orderLineLI}</ul>`;
+    console.log(orderLineItemUL);
+    orderLineItemsList += orderLineItemUL;
+  }
+  appendLineItemsToOrderSchedule(orderLineItemsList);
 }

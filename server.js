@@ -22,6 +22,9 @@ app.use('/', customerRoutes);
 var orderRoutes = require('./router/OrderRouter');
 app.use('/', orderRoutes);
 
+var orderManagementRoutes = require('./router/OrderManagementRouter');
+app.use('/', orderManagementRoutes);
+
 app.use(express.static(path.join(__dirname, './static')));
 
 app.listen(process.env.PORT || 3000, () => {
