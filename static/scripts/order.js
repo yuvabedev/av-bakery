@@ -1,7 +1,25 @@
+$('#manageCustomerOrderButton').click(function () {
+  var customerId = $("input[name='customerId']:checked").val();
+  if (customerId == undefined) {
+    $('#editMessage').html('Please select a customer').addClass('error');
+    return;
+  }
+  manageCustomerOrder(customerId);
+});
+
+function manageCustomerOrder(customerId) {
+  console.log("Creating order for customerID : " + customerId);
+  if (customerId == undefined) {
+    $('#editMessage').html('Please select a customer to create order').addClass('error');
+    return;
+  }    
+  window.location.href = `/orderManage?customerId=${customerId}`;
+}
+
 $('#createCustomerOrderButton').click(function () {
-    var customerId = $("input[name='customerId']:checked").val();
+    var customerId = $("#customerId").val();
     if (customerId == undefined) {
-      $('#editMessage').html('Please select a customer to create order').addClass('error');
+      console.log("No customer id available on page");
       return;
     }
     createCustomerOrder(customerId);
