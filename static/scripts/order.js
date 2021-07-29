@@ -157,12 +157,38 @@ function displayOrderLines(orderLines) {
     var orderLineLI = "";
     var productNameLI = `<li style='display:inline' class='orderLineItem'>${orderLine.product_name}</li>`;
     var quantityLI = `<li style='display:inline' class='orderLineItem'>${orderLine.quantity}</li>`;
-    var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${orderLine.delivery_date}</li>`;
+    var formattedDate = formatDateString(orderLine.delivery_date);
+    var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${formattedDate}</li>`;
     var deliveryLocationLI = `<li style='display:inline' class='orderLineItem'>${orderLine.delivery_location}</li>`;
-    var orderLineLI = productNameLI + quantityLI + deliveryDateLI + deliveryLocationLI;
+    var editOrderLineItemButtonLi = "<li style='display:inline-block; width=100px;' class='orderlineitem-edit'><button onClick='javascript:makeLineItemEditable(this)' class='customer-button'>Edit</button></li>";
+    var editCancelOrderLineItemButtonLi = "<li style='display:none; width=100px;' class='orderlineitem-cancel-edit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button'>Cancel</button></li>";
+    var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:deleteLineItem(this)' class='customer-button'>Delete</button></li>";
+    var orderLineLI = productNameLI + quantityLI + deliveryDateLI + deliveryLocationLI + editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
     var orderLineItemUL = `<ul class='orderLineItems'>${orderLineLI}</ul>`;
-    console.log(orderLineItemUL);
+    //console.log(orderLineItemUL);
     orderLineItemsList += orderLineItemUL;
   }
   appendLineItemsToOrderSchedule(orderLineItemsList);
+}
+
+function formatDateString(dateString) {
+  var timeStamp = Date.parse(dateString);
+  var dateObject = new Date(timeStamp);
+  var month = dateObject.toLocaleDateString("en-IN", {month: 'short' });
+  var day = dateObject.getDate().toString();
+  if (day.length < 2) {
+    day = "0" + day;
+  }
+  var yyyy = dateObject.getFullYear();
+  return month + " " + day + "," + yyyy;
+}
+
+function makeLineItemEditable(currentElement) {
+  $(currentElement).parent().hide();
+  $(currentElement).parent().parent().find('.orderlineitem-cancel-edit').show();
+}
+
+function cancelEditLineItem(currentElement) {
+  $(currentElement).parent().hide();
+  $(currentElement).parent().parent().find('.orderlineitem-edit').show();
 }
