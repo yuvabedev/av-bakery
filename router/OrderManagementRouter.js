@@ -51,4 +51,9 @@ var httpResponse = {};
     orderService.getOrderLineItemsByCustomerId(customerId, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
   });
 
+  router.get ('/deliveryLocations' , (request, response) => {
+    var deliverLocations = global.deliveryLocations;
+    response.status(201).send(deliverLocations);
+  });
+
   module.exports = router;

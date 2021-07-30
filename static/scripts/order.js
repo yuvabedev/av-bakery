@@ -1,3 +1,15 @@
+var deliveryLocations = {};
+
+$.get('deliveryLocations')
+.done(function (data) {
+  console.log('Delovery locations loaded....');
+  deliveryLocations = data;
+  console.log(deliveryLocations);
+})
+.fail(function (e) {
+  console.log(e);
+});
+
 $('#manageCustomerOrderButton').click(function () {
   var customerId = $("input[name='customerId']:checked").val();
   if (customerId == undefined) {
@@ -150,7 +162,6 @@ function loadOrderLineItemsForCustomerId(customerId) {
   $.get('orderLineItems', criteria)
   .done(function (data) {
     console.log('Request Success!!');
-    console.log(data);
     displayOrderLines(data);
   })
   .fail(function (e) {
@@ -174,14 +185,24 @@ function displayOrderLines(orderLines) {
     var orderLine = orderLines[index];
     var orderLineLI = "";
     var productNameLI = `<li style='display:inline' class='orderLineItem'>${orderLine.product_name}</li>`;
-    var quantityLI = `<li style='display:inline' class='orderLineItem'>${orderLine.quantity}</li>`;
+    var quantityLI = `<li style='display:inline' class='orderLineItem quantityView'>${orderLine.quantity}</li>`;
+    var quantityEditLI = `<li style='display:none' class="orderLineItem quantityEdit"> 
+                            <input type='text' name='quantity-${orderLine.id}' id='quantity-${orderLine.id}' class='text-input' value='${orderLine.quantity}' /> 
+                          </li>`;
     var formattedDate = formatDateString(orderLine.delivery_date);
     var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${formattedDate}</li>`;
-    var deliveryLocationLI = `<li style='display:inline' class='orderLineItem'>${orderLine.delivery_location}</li>`;
-    var editOrderLineItemButtonLi = "<li style='display:inline-block; width=100px;' class='orderlineitem-edit'><button onClick='javascript:makeLineItemEditable(this)' class='customer-button'>Edit</button></li>";
-    var editCancelOrderLineItemButtonLi = "<li style='display:none; width=100px;' class='orderlineitem-cancel-edit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button'>Cancel</button></li>";
+    var deliveryLocationLI = `<li style='display:inline' class='orderLineItem deliveryLocationView'>${orderLine.delivery_location}</li>`;
+    var deliveryLocationDrodown = createDeliveryLocationDropdown(`${orderLine.delivery_location}`);
+    var deliveryLocationDropDownLI = `<li style='display:none' class='orderLineItem deliveryLocationEdit'>${deliveryLocationDrodown}</li>`;
+    
+    //edit buttons
+    var editOrderLineItemButtonLi = `<li style='display:inline;' class='orderLineItem-Edit' id="orderLineItem-${orderLine.id}"><button onClick='javascript:makeLineItemEditable(this)' class='customer-button'>Edit</button></li>`;
+    var editCancelOrderLineItemButtonLi = "<li style='display:none;' class='orderLineItem-cancelEdit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button'>Cancel</button></li>";
+    var editSaveOrderLineItemButtonLi = "<li style='display:none; margin-left: 20px;' class='orderLineItem-saveEdit'><button onClick='javascript:saveEditLineItem(this)' class='customer-button'>Save</button></li>";
     var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:deleteLineItem(this)' class='customer-button'>Delete</button></li>";
-    var orderLineLI = productNameLI + quantityLI + deliveryDateLI + deliveryLocationLI + editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
+    
+    var orderLineLI = productNameLI + quantityLI + quantityEditLI +deliveryDateLI + deliveryLocationLI + deliveryLocationDropDownLI +
+                  editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + editSaveOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
     var orderLineItemUL = `<ul class='orderLineItems'>${orderLineLI}</ul>`;
     //console.log(orderLineItemUL);
     orderLineItemsList += orderLineItemUL;
@@ -202,11 +223,48 @@ function formatDateString(dateString) {
 }
 
 function makeLineItemEditable(currentElement) {
+  //hide edit line item button
   $(currentElement).parent().hide();
-  $(currentElement).parent().parent().find('.orderlineitem-cancel-edit').show();
+  //show cancel edit button
+  $(currentElement).parent().parent().find('.orderLineItem-cancelEdit').css("display", "inline");
+  $(currentElement).parent().parent().find('.orderLineItem-saveEdit').css("display", "inline");
+
+  //hide view quantity element
+  $(currentElement).parent().parent().find('.quantityView').hide();
+  $(currentElement).parent().parent().find('.deliveryLocationView').hide();
+
+  //show edit quantity element
+  $(currentElement).parent().parent().find('.quantityEdit').show();
+  $(currentElement).parent().parent().find('.deliveryLocationEdit').show();
 }
 
 function cancelEditLineItem(currentElement) {
+  //hide cancel button
   $(currentElement).parent().hide();
-  $(currentElement).parent().parent().find('.orderlineitem-edit').show();
+  //hide save button
+  $(currentElement).parent().parent().find('.orderLineItem-saveEdit').hide();
+  //show edit button
+  $(currentElement).parent().parent().find('.orderLineItem-Edit').show();
+
+    //show view quantity element
+  $(currentElement).parent().parent().find('.quantityView').show();
+  $(currentElement).parent().parent().find('.deliveryLocationView').show();
+    //hide edit quantity element
+  $(currentElement).parent().parent().find('.quantityEdit').hide();
+  $(currentElement).parent().parent().find('.deliveryLocationEdit').hide();
 }
+
+function createDeliveryLocationDropdown(selectedLocation) {
+  var dropDown = '<select class="select-menu" name="deliveryLocation" id="deliveryLocation">';
+  deliveryLocations.forEach(function(location) {
+    var option = "";
+    if (selectedLocation == location.name) {
+      option = `<option value="${location.name}" selected>${location.name}</option>`;
+    } else {
+      option = `<option value="${location.name}">${location.name}</option>`;
+    }
+    dropDown = dropDown + option;
+  });
+  dropDown = dropDown + "</select>";
+  return dropDown;
+ }
