@@ -56,4 +56,39 @@ var httpResponse = {};
     response.status(201).send(deliverLocations);
   });
 
+  /**
+   * Updates the order line item received from request
+   */
+  router.put('/orderLineItemUpdate', (request, response) => {
+    callbackHelper.setResponse(response);
+
+    console.log("Updating order line item:" + JSON.stringify(request.body));
+
+    if (!validateOrderLineItemForUpdate(request.body)) {
+      console.log("Request to edit order line item failed validation!");
+      response.status(400).send(requestError);
+      return;
+    }
+
+    response.status(201).send("updated yayaya");
+  });
+
+  function validateOrderLineItemForUpdate(requestData) {
+    if (!callbackHelper.hasValue(requestData.id)) {
+      requestError = 'No orderLine id defined. Please contact support.';
+      return false;
+    }
+    if (callbackHelper.hasValue(requestData.quantity)) {
+      if (isNaN(requestData.quantity)) {
+        requestError = 'Quantity must be a number.';
+        return false;
+      }
+    }
+    if (Number(requestData.quantity) < 1) {
+      requestError = 'Quantity must be 1 or greater.';
+      return false;
+    }
+    return true;
+  }
+
   module.exports = router;

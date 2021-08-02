@@ -280,30 +280,39 @@ function createDeliveryLocationDropdown(selectedLocation) {
  }
 
  function saveEditToLineItem(currentElement) {
+   
    var criteria = {};
+   var updateMessage = "";
    var previousQuantity = $(currentElement).parent().parent().find('.quantityView').text();
    var orderLineItemId = currentElement.id.split('-')[1];
    console.log("Editing orderline item " + orderLineItemId);
 
+   hideUpdateMessage(orderLineItemId);
+
    var updateMade = false;
    var editedQuantity = $(currentElement).parent().parent().find('.quantityEdit').find('input').val();
    if (previousQuantity != editedQuantity) {
-     console.log(`Updating quantity from ${previousQuantity} to ${editedQuantity}`);
+     criteria.quantity = editedQuantity;
+     updateMessage += `Quantity updated from ${previousQuantity} to ${editedQuantity}`;
      updateMade = true;
    }
    var previousDeliveryLocation = $(currentElement).parent().parent().find('.deliveryLocationView').text();
    var editedDeliveryLocation = $('#deliveryLocation').find(":selected").val();
 
    if (previousDeliveryLocation != editedDeliveryLocation) {
-    console.log(`Updating DeliveryLocation from ${previousDeliveryLocation} to ${editedDeliveryLocation}`);
+    criteria.deliveryLocation = editedDeliveryLocation;
+    updateMessage += ` DeliveryLocation updated from ${previousDeliveryLocation} to ${editedDeliveryLocation}`;
     updateMade = true;
   }
 
-  var updateMessage = "";
   if (!updateMade) {
     updateMessage = "Nothing updated as no values were changed. Please update quantity or delivery location and save again."
     displayUpdateMessage(orderLineItemId, updateMessage, 'warning');
+    return;
   }
+  
+  criteria.id = orderLineItemId;
+  updateOrderLineItem(criteria, updateMessage);
  } //function end
 
  function displayUpdateMessage(orderLineItemId, updateMessage, className) {
@@ -315,4 +324,24 @@ function createDeliveryLocationDropdown(selectedLocation) {
  function hideUpdateMessage(orderLineItemId) {
   var updateMessageDisplayId= `#orderLineUpdateMessage-${orderLineItemId}`;
   $(updateMessageDisplayId).html('').removeClass('error warning success');
+ }
+
+ /**
+  * persists the changes to order line item into the database
+  * @param {*} criteria 
+  */
+ function updateOrderLineItem(criteria, updateMessage) {
+    $.ajax({
+      url: 'orderLineItemUpdate',
+      type: 'PUT',
+      data: criteria,
+      success: function(response) {
+        console.log(updateMessage)
+        displayUpdateMessage(criteria.id, updateMessage, "success");
+      },
+      error: function(error) {
+        console.log(error.responseText);
+        displayUpdateMessage(criteria.id, error.responseText, "error");
+      }
+  });
  }
