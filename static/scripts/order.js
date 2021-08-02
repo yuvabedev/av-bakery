@@ -197,17 +197,25 @@ function displayOrderLines(orderLines) {
     
     //edit buttons
     var editOrderLineItemButtonLi = `<li style='display:inline;' class='orderLineItem-Edit' id="orderLineItem-${orderLine.id}"><button onClick='javascript:makeLineItemEditable(this)' class='customer-button'>Edit</button></li>`;
-    var editCancelOrderLineItemButtonLi = "<li style='display:none;' class='orderLineItem-cancelEdit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button'>Cancel</button></li>";
-    var editSaveOrderLineItemButtonLi = "<li style='display:none; margin-left: 20px;' class='orderLineItem-saveEdit'><button onClick='javascript:saveEditLineItem(this)' class='customer-button'>Save</button></li>";
+    var editCancelOrderLineItemButtonLi = `<li style='display:none;' class='orderLineItem-cancelEdit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button' id='cancelEditLineItem-${orderLine.id}'>Cancel</button></li>`;
+    var editSaveOrderLineItemButtonLi = `<li style='display:none; margin-left: 20px;' class='orderLineItem-saveEdit'><button onClick='javascript:saveEditToLineItem(this)' class='customer-button' id='orderLineItemSave-${orderLine.id}'>Save</button></li>`;
     var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:deleteLineItem(this)' class='customer-button'>Delete</button></li>";
     
     var orderLineLI = productNameLI + quantityLI + quantityEditLI +deliveryDateLI + deliveryLocationLI + deliveryLocationDropDownLI +
                   editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + editSaveOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
     var orderLineItemUL = `<ul class='orderLineItems'>${orderLineLI}</ul>`;
+    var orderLineUpdateMessageUL = getULForUpdateMessage(orderLine);
+    orderLineItemUL += orderLineUpdateMessageUL;
     //console.log(orderLineItemUL);
     orderLineItemsList += orderLineItemUL;
   }
   appendLineItemsToOrderSchedule(orderLineItemsList);
+}
+
+function getULForUpdateMessage(orderLine) {
+  var li = `<li><span id="orderLineUpdateMessage-${orderLine.id}" style="display: none;"></span></li>`
+  var orderLineItemUpdateMessage = `<ul class='orderLineItems'>${li}</ul>`;
+  return orderLineItemUpdateMessage;
 }
 
 function formatDateString(dateString) {
@@ -252,6 +260,8 @@ function cancelEditLineItem(currentElement) {
     //hide edit quantity element
   $(currentElement).parent().parent().find('.quantityEdit').hide();
   $(currentElement).parent().parent().find('.deliveryLocationEdit').hide();
+  var orderLineItemId = currentElement.id.split('-')[1];
+  hideUpdateMessage(orderLineItemId);
 }
 
 function createDeliveryLocationDropdown(selectedLocation) {
@@ -267,4 +277,42 @@ function createDeliveryLocationDropdown(selectedLocation) {
   });
   dropDown = dropDown + "</select>";
   return dropDown;
+ }
+
+ function saveEditToLineItem(currentElement) {
+   var criteria = {};
+   var previousQuantity = $(currentElement).parent().parent().find('.quantityView').text();
+   var orderLineItemId = currentElement.id.split('-')[1];
+   console.log("Editing orderline item " + orderLineItemId);
+
+   var updateMade = false;
+   var editedQuantity = $(currentElement).parent().parent().find('.quantityEdit').find('input').val();
+   if (previousQuantity != editedQuantity) {
+     console.log(`Updating quantity from ${previousQuantity} to ${editedQuantity}`);
+     updateMade = true;
+   }
+   var previousDeliveryLocation = $(currentElement).parent().parent().find('.deliveryLocationView').text();
+   var editedDeliveryLocation = $('#deliveryLocation').find(":selected").val();
+
+   if (previousDeliveryLocation != editedDeliveryLocation) {
+    console.log(`Updating DeliveryLocation from ${previousDeliveryLocation} to ${editedDeliveryLocation}`);
+    updateMade = true;
+  }
+
+  var updateMessage = "";
+  if (!updateMade) {
+    updateMessage = "Nothing updated as no values were changed. Please update quantity or delivery location and save again."
+    displayUpdateMessage(orderLineItemId, updateMessage, 'warning');
+  }
+ } //function end
+
+ function displayUpdateMessage(orderLineItemId, updateMessage, className) {
+  var updateMessageDisplayId= `#orderLineUpdateMessage-${orderLineItemId}`;
+  $(updateMessageDisplayId).html(updateMessage).addClass(className);
+  $(updateMessageDisplayId).show();
+ }
+
+ function hideUpdateMessage(orderLineItemId) {
+  var updateMessageDisplayId= `#orderLineUpdateMessage-${orderLineItemId}`;
+  $(updateMessageDisplayId).html('').removeClass('error warning success');
  }
