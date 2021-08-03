@@ -187,13 +187,13 @@ function displayOrderLines(orderLines) {
     if (orderLine.status != 'ACTIVE') continue;
 
     var orderLineLI = "";
-    var productNameLI = `<li style='display:inline' class='orderLineItem'>${orderLine.product_name}</li>`;
+    var productNameLI = `<li style='display:inline' class='orderLineItem productView'>${orderLine.product_name}</li>`;
     var quantityLI = `<li style='display:inline' class='orderLineItem quantityView'>${orderLine.quantity}</li>`;
     var quantityEditLI = `<li style='display:none' class="orderLineItem quantityEdit"> 
                             <input type='text' name='quantity-${orderLine.id}' id='quantity-${orderLine.id}' class='text-input' value='${orderLine.quantity}' /> 
                           </li>`;
     var formattedDate = formatDateString(orderLine.delivery_date);
-    var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${formattedDate}</li>`;
+    var deliveryDateLI = `<li style='display:inline' class='orderLineItem deliveryDateView'>${formattedDate}</li>`;
     var deliveryLocationLI = `<li style='display:inline' class='orderLineItem deliveryLocationView'>${orderLine.delivery_location}</li>`;
     var deliveryLocationDrodown = createDeliveryLocationDropdown(`${orderLine.delivery_location}`, orderLine.id);
     var deliveryLocationDropDownLI = `<li style='display:none' class='orderLineItem deliveryLocationEdit'>${deliveryLocationDrodown}</li>`;
@@ -401,11 +401,26 @@ function deleteLineItem(currentElement) {
     type: 'PUT',
     data: criteria,
     success: function(response) {
-    
+      displayDeleteOrderLineItemMessage(currentElement);
+      removeULForDeletedLineItem(currentElement);
     },
     error: function(error) {
       console.log(error.responseText);
       displayUpdateMessage(criteria.id, error.responseText, "error");
     }
-});
+  });
+}
+
+function displayDeleteOrderLineItemMessage(currentElement) {
+  var orderLineItemId = currentElement.id.split('-')[1];
+  var orderLineItemUL = $(currentElement).parent().parent();
+  var productName = orderLineItemUL.find('.productView').text();
+  var deliveryDate = orderLineItemUL.find('.deliveryDateView').text();
+  var deleteConfirmMessage = `Order for ${productName} scheduled for delivery on ${deliveryDate} has been deleted and shall no longer be delivered.`;
+  displayUpdateMessage(orderLineItemId, deleteConfirmMessage, 'success');
+}
+
+function removeULForDeletedLineItem(currentElement) {
+  var orderLineItemUL = $(currentElement).parent().parent();
+  orderLineItemUL.hide();
 }
