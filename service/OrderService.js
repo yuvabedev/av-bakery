@@ -53,7 +53,7 @@ function updateOrderLineItem(orderLineItem, callback) {
 
 function saveOrderLineItem(orderLineItem, callback) {
   var orderLineItemInsertSql = getQueryForSaveOrderLineItem(orderLineItem);
-  executeSaveQuery(orderLineItemInsertSql, callback);
+  executeSaveQuery(orderLineItemInsertSql, "order_line", callback);
 }
 
 function disableOrderLineItem(orderLineItemId, callback) {
@@ -91,6 +91,7 @@ function executeQuery(sql, callback) {
       if (error) {
         callback(error, results);
       } else {
+        console.log(results);
         callback(error, results);
       }
     });

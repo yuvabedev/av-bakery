@@ -110,7 +110,7 @@ function saveOrderSchedule(orderSchedule) {
   console.log("Saving order schedule...");
   $.post('orderScheduleSave', orderSchedule)
     .done(function (data) {
-      console.log('Order Schedule Saved With id: '  + data.id);
+      console.log('Order Schedule Saved With id: '  + data[0].id);
       saveOrderLineItems(data[0]);
     })
     .fail(function (e) {

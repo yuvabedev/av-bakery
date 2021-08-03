@@ -219,8 +219,8 @@ function createDeliveryScheduleDropdown(error, data) {
       console.log("saving order line items...");
       var orderLineItems = JSON.parse(request.body.orderLineItems);
       saveOrderLineItems(orderLineItems);
-      console.log(orderLineItems);
       
+      var scheduleId = orderLineItems[0].scheduleId;
       response.status(201).send("data");
     });
 
