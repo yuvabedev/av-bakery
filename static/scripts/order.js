@@ -175,10 +175,10 @@ function loadOrderLineItemsForCustomerId(customerId) {
 function displayOrderLines(orderLines) {
   if (orderLines.length < 1) {
     $('#loadMessage').html('No Orders Found').addClass('warning');
-  } else {
-    $('#loadMessage').html(`${orderLines.length} Orders Found`).addClass('success');
-  }
+    return;
+  } 
 
+  var activeOrders = 0;
   var orderLineItemsList = "";
 
   for (index in orderLines) {
@@ -202,7 +202,7 @@ function displayOrderLines(orderLines) {
     var editOrderLineItemButtonLi = `<li style='display:inline;' class='orderLineItem-Edit' id="orderLineItem-${orderLine.id}"><button onClick='javascript:makeLineItemEditable(this)' class='customer-button'>Edit</button></li>`;
     var editCancelOrderLineItemButtonLi = `<li style='display:none;' class='orderLineItem-cancelEdit'><button onClick='javascript:cancelEditLineItem(this)' class='customer-button' id='cancelEditLineItem-${orderLine.id}'>Cancel</button></li>`;
     var editSaveOrderLineItemButtonLi = `<li style='display:none; margin-left: 20px;' class='orderLineItem-saveEdit'><button onClick='javascript:saveEditToLineItem(this)' class='customer-button' id='orderLineItemSave-${orderLine.id}'>Save</button></li>`;
-    var deleteOrderLineItemButtonLi = "<li style='display:inline; margin-left: 20px;'><button onClick='javascript:deleteLineItem(this)' class='customer-button'>Delete</button></li>";
+    var deleteOrderLineItemButtonLi = `<li style='display:inline; margin-left: 20px;'><button onClick='javascript:deleteLineItem(this)' class='customer-button' id='orderLineItemDelete-${orderLine.id}'>Delete</button></li>`;
     
     var orderLineLI = productNameLI + quantityLI + quantityEditLI +deliveryDateLI + deliveryLocationLI + deliveryLocationDropDownLI +
                   editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + editSaveOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
@@ -211,7 +211,11 @@ function displayOrderLines(orderLines) {
     orderLineItemUL += orderLineUpdateMessageUL;
     //console.log(orderLineItemUL);
     orderLineItemsList += orderLineItemUL;
+    activeOrders++;
   }
+
+  $('#loadMessage').html(`${activeOrders} Orders Found`).addClass('success');
+
   appendLineItemsToOrderSchedule(orderLineItemsList);
 }
 
@@ -351,6 +355,7 @@ function createDeliveryLocationDropdown(selectedLocation, orderLineItemId) {
       }
   });
  }
+ 
 
  function reloadLineItem(response, currentElement) {
   //hide save button
@@ -379,4 +384,28 @@ function createDeliveryLocationDropdown(selectedLocation, orderLineItemId) {
 
 function drawAndFadeBorder(ulElement) {
   ulElement.css("border", "1px solid black");
+}
+
+
+/**
+ * handles delete event from UI
+ * @param {*} currentElement 
+ */
+function deleteLineItem(currentElement) {
+  var criteria = {};
+  var orderLineItemId = currentElement.id.split('-')[1];
+  console.log("Deleting orderline item " + orderLineItemId);
+  criteria.id = orderLineItemId;
+  $.ajax({
+    url: 'orderLineItemDelete',
+    type: 'PUT',
+    data: criteria,
+    success: function(response) {
+    
+    },
+    error: function(error) {
+      console.log(error.responseText);
+      displayUpdateMessage(criteria.id, error.responseText, "error");
+    }
+});
 }

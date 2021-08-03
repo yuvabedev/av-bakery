@@ -56,6 +56,11 @@ function saveOrderLineItem(orderLineItem, callback) {
   executeSaveQuery(orderLineItemInsertSql, callback);
 }
 
+function disableOrderLineItem(orderLineItemId, callback) {
+    var disableOrderLineItemSql = getQueryForDisableOrderLineItem(orderLineItemId);
+    executeQuery(disableOrderLineItemSql, callback)
+} 
+
 function getQueryForSaveOrderSchedule(orderSchedule) {
   var saveOrderScheduleSql = "INSERT INTO order_schedule (customer_id, product_id, product_name, quantity, start_date, delivery_location, total_deliveries, status, notes)\
    VALUES ('%s', '%s', '%s', %s, '%s', '%s', %s, '%s', '%s');"
@@ -73,6 +78,11 @@ function getQueryForSaveOrderLineItem(orderLineItem) {
 function getQueryForUpdateOrderLineItem(orderLineItem) {
   var updateOrderLineItemSql = "UPDATE order_line  SET quantity = %s, delivery_location = '%s' WHERE id = '%s'";
     return util.format(updateOrderLineItemSql, orderLineItem.quantity, orderLineItem.deliveryLocation, orderLineItem.id);
+}
+
+function getQueryForDisableOrderLineItem(orderLineItemId) {
+  var updateOrderLineItemSql = "UPDATE order_line  SET status = '%s' WHERE id = '%s'";
+  return util.format(updateOrderLineItemSql, 'INACTIVE', orderLineItemId);
 }
 
 function executeQuery(sql, callback) {
@@ -117,4 +127,5 @@ function executeQuery(sql, callback) {
     saveOrderLineItem,
     getOrderLineItemsByCustomerId,
     updateOrderLineItem,
+    disableOrderLineItem,
   };

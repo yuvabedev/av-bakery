@@ -78,6 +78,16 @@ var httpResponse = {};
     orderService.updateOrderLineItem(orderLineItem, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
   });
 
+    /**
+   * Updates the order line item received from request
+   */
+     router.put('/orderLineItemDelete', (request, response) => {
+      callbackHelper.setResponse(response);  
+      console.log("Deleted order line item:" + request.body.id);
+      var orderLineItemId = request.body.id;
+      orderService.disableOrderLineItem(orderLineItemId, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    });
+
   function validateOrderLineItemForUpdate(requestData) {
     if (!callbackHelper.hasValue(requestData.id)) {
       requestError = 'No orderLine id defined. Please contact support.';
