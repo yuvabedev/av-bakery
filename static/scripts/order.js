@@ -183,6 +183,9 @@ function displayOrderLines(orderLines) {
 
   for (index in orderLines) {
     var orderLine = orderLines[index];
+    
+    if (orderLine.status != 'ACTIVE') continue;
+
     var orderLineLI = "";
     var productNameLI = `<li style='display:inline' class='orderLineItem'>${orderLine.product_name}</li>`;
     var quantityLI = `<li style='display:inline' class='orderLineItem quantityView'>${orderLine.quantity}</li>`;
@@ -192,7 +195,7 @@ function displayOrderLines(orderLines) {
     var formattedDate = formatDateString(orderLine.delivery_date);
     var deliveryDateLI = `<li style='display:inline' class='orderLineItem'>${formattedDate}</li>`;
     var deliveryLocationLI = `<li style='display:inline' class='orderLineItem deliveryLocationView'>${orderLine.delivery_location}</li>`;
-    var deliveryLocationDrodown = createDeliveryLocationDropdown(`${orderLine.delivery_location}`);
+    var deliveryLocationDrodown = createDeliveryLocationDropdown(`${orderLine.delivery_location}`, orderLine.id);
     var deliveryLocationDropDownLI = `<li style='display:none' class='orderLineItem deliveryLocationEdit'>${deliveryLocationDrodown}</li>`;
     
     //edit buttons
@@ -264,8 +267,8 @@ function cancelEditLineItem(currentElement) {
   hideUpdateMessage(orderLineItemId);
 }
 
-function createDeliveryLocationDropdown(selectedLocation) {
-  var dropDown = '<select class="select-menu" name="deliveryLocation" id="deliveryLocation">';
+function createDeliveryLocationDropdown(selectedLocation, orderLineItemId) {
+  var dropDown = `<select class="select-menu" name="deliveryLocation" id="deliveryLocation-${orderLineItemId}">`;
   deliveryLocations.forEach(function(location) {
     var option = "";
     if (selectedLocation == location.name) {
@@ -292,18 +295,17 @@ function createDeliveryLocationDropdown(selectedLocation) {
    var updateMade = false;
    var editedQuantity = $(currentElement).parent().parent().find('.quantityEdit').find('input').val();
    if (previousQuantity != editedQuantity) {
-     criteria.quantity = editedQuantity;
      updateMessage += `Quantity updated from ${previousQuantity} to ${editedQuantity}`;
      updateMade = true;
    }
    var previousDeliveryLocation = $(currentElement).parent().parent().find('.deliveryLocationView').text();
-   var editedDeliveryLocation = $('#deliveryLocation').find(":selected").val();
+   var editedDeliveryLocation = $('#deliveryLocation-'+orderLineItemId).find(":selected").val();
 
    if (previousDeliveryLocation != editedDeliveryLocation) {
-    criteria.deliveryLocation = editedDeliveryLocation;
-    updateMessage += ` DeliveryLocation updated from ${previousDeliveryLocation} to ${editedDeliveryLocation}`;
+    updateMessage += `<BR>DeliveryLocation updated from ${previousDeliveryLocation} to ${editedDeliveryLocation}`;
     updateMade = true;
   }
+
 
   if (!updateMade) {
     updateMessage = "Nothing updated as no values were changed. Please update quantity or delivery location and save again."
@@ -312,7 +314,10 @@ function createDeliveryLocationDropdown(selectedLocation) {
   }
   
   criteria.id = orderLineItemId;
-  updateOrderLineItem(criteria, updateMessage);
+  criteria.quantity = editedQuantity;
+  criteria.deliveryLocation = editedDeliveryLocation;
+
+  updateOrderLineItem(criteria, currentElement, updateMessage);
  } //function end
 
  function displayUpdateMessage(orderLineItemId, updateMessage, className) {
@@ -330,7 +335,7 @@ function createDeliveryLocationDropdown(selectedLocation) {
   * persists the changes to order line item into the database
   * @param {*} criteria 
   */
- function updateOrderLineItem(criteria, updateMessage) {
+ function updateOrderLineItem(criteria, currentElement, updateMessage) {
     $.ajax({
       url: 'orderLineItemUpdate',
       type: 'PUT',
@@ -338,6 +343,7 @@ function createDeliveryLocationDropdown(selectedLocation) {
       success: function(response) {
         console.log(updateMessage)
         displayUpdateMessage(criteria.id, updateMessage, "success");
+        reloadLineItem(response, currentElement);
       },
       error: function(error) {
         console.log(error.responseText);
@@ -345,3 +351,32 @@ function createDeliveryLocationDropdown(selectedLocation) {
       }
   });
  }
+
+ function reloadLineItem(response, currentElement) {
+  //hide save button
+  $(currentElement).parent().hide();
+  //hide cancel button
+  $(currentElement).parent().parent().find('.orderLineItem-cancelEdit').hide();
+  //show edit button
+  $(currentElement).parent().parent().find('.orderLineItem-Edit').show();
+
+    //show view quantity element
+  $(currentElement).parent().parent().find('.quantityView').show();
+  $(currentElement).parent().parent().find('.deliveryLocationView').show();
+    //hide edit quantity element
+  $(currentElement).parent().parent().find('.quantityEdit').hide();
+  $(currentElement).parent().parent().find('.deliveryLocationEdit').hide();
+
+  var updatedOrderLineItem = response[0];
+  console.log(updatedOrderLineItem);
+
+  $(currentElement).parent().parent().find('.quantityView').text(updatedOrderLineItem.quantity);
+  $(currentElement).parent().parent().find('.deliveryLocationView').text(updatedOrderLineItem.delivery_location);
+
+  //drawAndFadeBorder($(currentElement).parent().parent());
+ 
+}
+
+function drawAndFadeBorder(ulElement) {
+  ulElement.css("border", "1px solid black");
+}

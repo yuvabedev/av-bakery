@@ -16,9 +16,9 @@ function getDeliveryLocation(callback) {
     executeQuery(sql, callback);
 }
  
-function returnById(id, callback) {
-    var getByIDSql = "SELECT * FROM order_schedule WHERE Id = '%s'";
-    getByIdSql = util.format(getByIDSql, id);
+function returnById(id, tableName, callback) {
+    var getByIDSql = "SELECT * FROM %s WHERE Id = '%s'";
+    getByIdSql = util.format(getByIDSql, tableName, id);
     executeQuery(getByIdSql, callback);
 } 
 
@@ -43,7 +43,12 @@ function getQueryForDeliveryLocation() {
 
 function saveOrderSchedule(orderSchedule, callback) {
   var orderScheduleInsertSql = getQueryForSaveOrderSchedule(orderSchedule);
-  executeSaveQuery(orderScheduleInsertSql, callback);
+  executeSaveQuery(orderScheduleInsertSql, 'order_schedule', callback);
+}
+
+function updateOrderLineItem(orderLineItem, callback) {
+  var orderLineItemUpdateSql = getQueryForUpdateOrderLineItem(orderLineItem);
+  executeUpdateQuery(orderLineItemUpdateSql, orderLineItem.id, "order_line", callback);
 }
 
 function saveOrderLineItem(orderLineItem, callback) {
@@ -65,6 +70,11 @@ function getQueryForSaveOrderLineItem(orderLineItem) {
     orderLineItem.deliveryDate, orderLineItem.deliveryLocation, orderLineItem.status);
 }
 
+function getQueryForUpdateOrderLineItem(orderLineItem) {
+  var updateOrderLineItemSql = "UPDATE order_line  SET quantity = %s, delivery_location = '%s' WHERE id = '%s'";
+    return util.format(updateOrderLineItemSql, orderLineItem.quantity, orderLineItem.deliveryLocation, orderLineItem.id);
+}
+
 function executeQuery(sql, callback) {
     console.log(util.format('%s: Executing SQL: %s', filename, sql));
     connection.query(sql, function (error, results) {
@@ -76,17 +86,28 @@ function executeQuery(sql, callback) {
     });
   }
 
-  function executeSaveQuery(sql, callback) {
+  function executeSaveQuery(sql, tableName, callback) {
     console.log(util.format('%s: Executing SQL: %s', filename, sql));
     connection.query(sql, function (error, results) {
       if (error) {
         callback(error, results);
       } else {
-        returnById(results.insertId, callback);
+        console.log(results);
+        returnById(results.insertId, tableName, callback);
       }
     });
   }
 
+  function executeUpdateQuery(sql, id, tableName, callback) {
+    console.log(util.format('%s: Executing SQL: %s', filename, sql));
+    connection.query(sql, function (error, results) {
+      if (error) {
+        callback(error, results);
+      } else {
+        returnById(id, tableName, callback);
+      }
+    });
+  }
   
 
   module.exports = {
@@ -95,4 +116,5 @@ function executeQuery(sql, callback) {
     saveOrderSchedule,
     saveOrderLineItem,
     getOrderLineItemsByCustomerId,
+    updateOrderLineItem,
   };

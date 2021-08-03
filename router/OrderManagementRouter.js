@@ -69,8 +69,13 @@ var httpResponse = {};
       response.status(400).send(requestError);
       return;
     }
+    
+    var orderLineItem = {};
+    orderLineItem.id = request.body.id;
+    orderLineItem.quantity = request.body.quantity;
+    orderLineItem.deliveryLocation = request.body.deliveryLocation;
 
-    response.status(201).send("updated yayaya");
+    orderService.updateOrderLineItem(orderLineItem, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
   });
 
   function validateOrderLineItemForUpdate(requestData) {
