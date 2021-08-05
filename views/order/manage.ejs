@@ -135,6 +135,52 @@
       <input type="hidden" id="customerId" value="<%=customer.id%>" />
     </section>
 
+    <section id="orders-currentMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+      <h3>Orders for August</h3>
+      <section id="orderTable-currentMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
+        <ul class="header">
+          <li class="col">Product</li>
+          <li class="col">Quantity</li>
+          <li class="col">Delivery Date</li>
+          <li class="col">Delivery Location</li>
+        </ul>
+        <span id="loadMessage-currentMonth" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
+        <div id="orderLineItems-currentMonth" />
+      </section>
+        <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display: inline;" id="expand-currentMonth">Click to Expand +</a>
+        <a href="javascript:hideOrderLineItemsForSection('currentMonth')" style="display: none;" id="collapse-currentMonth">Click to Collapse -</a>
+    </section>
+
+    <section id="nextMonthOrders" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+      <h3>Orders for September</h3>
+      <section id="nextMonthOrderTable" class="form-group form-fields" style="white-space:nowrap; display: none;">
+        <ul class="header">
+          <li class="col">Product</li>
+          <li class="col">Quantity</li>
+          <li class="col">Delivery Date</li>
+          <li class="col">Delivery Location</li>
+        </ul>
+        <span id="loadMessage" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
+        <div id="orderLineItems" />
+      </section>
+        Click to Expand +
+    </section>
+
+    <section id="lastMonthOrders" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+      <h3>Orders for October</h3>
+      <section id="lastMonthOrderTable" class="form-group form-fields" style="white-space:nowrap; display: none;">
+        <ul class="header">
+          <li class="col">Product</li>
+          <li class="col">Quantity</li>
+          <li class="col">Delivery Date</li>
+          <li class="col">Delivery Location</li>
+        </ul>
+        <span id="loadMessage" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
+        <div id="orderLineItems" />
+      </section>
+        Click to Expand +
+    </section>
+
     <section id="orderTable" class="form-group form-fields" style="white-space:nowrap;">
       <ul class="header">
         <li class="col">Product</li>
@@ -152,12 +198,13 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="scripts/customer.js"></script>
   <script src="scripts/order.js"></script>
-  <script>
+  <script src="scripts/manage_orders.js"></script>
+<script>
     $( document ).ready(function() {
         console.log( "ready!" );
         var urlParams = new URLSearchParams(window.location.search);
         var customerId = urlParams.get('customerId');
-        loadOrderLineItemsForCustomerId(customerId);
+        //fetchOrderLineItemsForCustomerId(customerId);
     });
   </script>
 </html>

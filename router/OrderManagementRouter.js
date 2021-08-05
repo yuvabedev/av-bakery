@@ -41,14 +41,19 @@ var httpResponse = {};
  * returns the json representing customer object
  */
  router.get('/orderLineItems', (request, response) => {
-    httpResponse = response;
-    console.log(request.query);
+    console.log("Fetching order line items with criteria " + JSON.stringify(request.query));
+    
     var customerId = request.query.customerId;
-    console.log(util.format('%s: Getting order lines for customer id: %s', filename, customerId));
+    var startDate = request.query.startDate;
+    var endDate = request.query.endDate;
   
+    var criteria = {};
+    criteria.customerId = customerId;
+    criteria.startDate = startDate;
+    criteria.endDate = endDate;
+
     callbackHelper.setResponse(response);
-  
-    orderService.getOrderLineItemsByCustomerId(customerId, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    orderService.getOrderLineItemsByCustomerIdAndDateRange(criteria, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
   });
 
   router.get ('/deliveryLocations' , (request, response) => {

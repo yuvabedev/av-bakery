@@ -27,10 +27,19 @@ function getOrderLineItemsByCustomerId(id, callback) {
     executeQuery(sql, callback);
 }
 
+function getOrderLineItemsByCustomerIdAndDateRange(criteria, callback) {
+  var sql = getQueryForOrderLineItemsByCustomerIdAndDateRange(criteria.customerId, criteria.startDate, criteria.endDate);
+  executeQuery(sql, callback);
+}
 
 function getQueryForOrderLineItemsByCustomerId(id) {
   var sql = "SELECT * FROM `order_line` WHERE customer_id = '%s' ORDER BY delivery_date";
   return util.format(sql, id);
+}
+
+function getQueryForOrderLineItemsByCustomerIdAndDateRange(customerId, startDate, endDate) {
+  var sql = "SELECT * FROM `order_line` WHERE customer_id = '%s' AND delivery_date >= '%s' AND delivery_date < '%s' ORDER BY delivery_date";
+  return util.format(sql, customerId, startDate, endDate);
 }
 
 function getQueryForDeliverySchedule() {
@@ -127,6 +136,7 @@ function executeQuery(sql, callback) {
     saveOrderSchedule,
     saveOrderLineItem,
     getOrderLineItemsByCustomerId,
+    getOrderLineItemsByCustomerIdAndDateRange,
     updateOrderLineItem,
     disableOrderLineItem,
   };
