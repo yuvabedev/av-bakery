@@ -44,11 +44,11 @@
         display: inline-block;
         width: 100px;
         margin: 0 auto;
-        font-size: large;
+        font-size: 1.2em;
       }
 
       .headertext {
-        font-size: large;
+        font-size: 1.2em;
       }
 
       .col {
@@ -102,10 +102,9 @@
     </ul>
 
     
-    
     <section class="parent">
       <% var customer = data[0]; %>
-      <div>
+      <div style="margin-top: 5px; margin-bottom: 5px;">
         <div class="row">
           <label for="description" class="headerlabel">Name:</label>
           <span class="headertext"><%= customer.name %></span>
@@ -148,7 +147,7 @@
         <span id="loadMessage-currentMonth" style="display: none; margin-top: 10px; height: 40px" class="error"></span> 
         <div id="orderLineItems-currentMonth" />
       </section>
-        <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display: inline;" id="expand-currentMonth">Click to Expand +</a>
+        <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display:   ;" id="expand-currentMonth">Click to Expand +</a>
         <a href="javascript:hideOrderLineItemsForSection('currentMonth')" style="display: none;" id="collapse-currentMonth">Click to Collapse -</a>
     </section>
 
