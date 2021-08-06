@@ -36,7 +36,8 @@
         width: auto;
         display: flex;
         flex-direction: row;
-        font-size: 1.1em;
+        font-size: 1.2em;
+        color: #77a0b8;
       }
 
       .headerlabel {
@@ -144,52 +145,43 @@
           <li class="col">Delivery Date</li>
           <li class="col">Delivery Location</li>
         </ul>
-        <span id="loadMessage-currentMonth" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
+        <span id="loadMessage-currentMonth" style="display: none; margin-top: 10px; height: 40px" class="error"></span> 
         <div id="orderLineItems-currentMonth" />
       </section>
         <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display: inline;" id="expand-currentMonth">Click to Expand +</a>
         <a href="javascript:hideOrderLineItemsForSection('currentMonth')" style="display: none;" id="collapse-currentMonth">Click to Collapse -</a>
     </section>
 
-    <section id="nextMonthOrders" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+    <section id="orders-nextMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
       <h3>Orders for September</h3>
-      <section id="nextMonthOrderTable" class="form-group form-fields" style="white-space:nowrap; display: none;">
+      <section id="orderTable-nextMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
         <ul class="header">
           <li class="col">Product</li>
           <li class="col">Quantity</li>
           <li class="col">Delivery Date</li>
           <li class="col">Delivery Location</li>
         </ul>
-        <span id="loadMessage" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
-        <div id="orderLineItems" />
+        <span id="loadMessage-nextMonth" style="display: none; margin-top: 10px; height: 40px" class="error"></span> 
+        <div id="orderLineItems-nextMonth" />
       </section>
-        Click to Expand +
+        <a href="javascript:showOrderLineItemsForSection('nextMonth')" style="display: inline;" id="expand-nextMonth">Click to Expand +</a>
+        <a href="javascript:hideOrderLineItemsForSection('nextMonth')" style="display: none;" id="collapse-nextMonth">Click to Collapse -</a>
     </section>
 
-    <section id="lastMonthOrders" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+    <section id="orders-lastMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
       <h3>Orders for October</h3>
-      <section id="lastMonthOrderTable" class="form-group form-fields" style="white-space:nowrap; display: none;">
+      <section id="orderTable-lastMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
         <ul class="header">
           <li class="col">Product</li>
           <li class="col">Quantity</li>
           <li class="col">Delivery Date</li>
           <li class="col">Delivery Location</li>
         </ul>
-        <span id="loadMessage" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
-        <div id="orderLineItems" />
+        <span id="loadMessage-lastMonth" style="display: none; margin-top: 10px; height: 40px" class="error"></span> 
+        <div id="orderLineItems-lastMonth" />
       </section>
-        Click to Expand +
-    </section>
-
-    <section id="orderTable" class="form-group form-fields" style="white-space:nowrap;">
-      <ul class="header">
-        <li class="col">Product</li>
-        <li class="col">Quantity</li>
-        <li class="col">Delivery Date</li>
-        <li class="col">Delivery Location</li>
-      </ul>
-      <span id="loadMessage" style="display: block; margin-top: 10px; height: 40px" class="error"></span> 
-      <div id="orderLineItems" />
+        <a href="javascript:showOrderLineItemsForSection('lastMonth')" style="display: inline;" id="expand-lastMonth">Click to Expand +</a>
+        <a href="javascript:hideOrderLineItemsForSection('lastMonth')" style="display: none;" id="collapse-lastMonth">Click to Collapse -</a>
     </section>
   </body>
 

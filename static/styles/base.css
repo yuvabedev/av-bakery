@@ -184,3 +184,12 @@ input[type='radio' i] {
 .success {
   color: green;
 }
+
+
+hr {
+  position: relative;
+  border: none;
+  height: 2px;
+  background: #77a0b8;
+  margin-bottom: 20px;
+}

@@ -14,6 +14,9 @@ $.get('deliveryLocations')
   console.log(e);
 });
 
+//Loading orders for current month
+showOrderLineItemsForSection('currentMonth');
+
 /**
  * This method is triggered when user click on "Click to Expand+" from Manage Orders UI
  * It loads the orders for section and displays thme to the Manage Orders Page
@@ -108,7 +111,7 @@ function createOrderLinesListElement(orderLines) {
                   editOrderLineItemButtonLi + editCancelOrderLineItemButtonLi + editSaveOrderLineItemButtonLi + deleteOrderLineItemButtonLi;
     var orderLineItemUL = `<ul class='orderLineItems'>${orderLineLI}</ul>`;
     var orderLineUpdateMessageUL = getULForUpdateMessage(orderLine);
-    orderLineItemUL += orderLineUpdateMessageUL;
+    orderLineItemUL += orderLineUpdateMessageUL + "<hr>";
     //console.log(orderLineItemUL);
     orderLineItemsList += orderLineItemUL;
   }
@@ -152,9 +155,9 @@ function toggleDisplay(element) {
 }
 
 function getULForUpdateMessage(orderLine) {
-  var li = `<li><span id="orderLineUpdateMessage-${orderLine.id}" style="display: none;"></span></li>`
-  var orderLineItemUpdateMessage = `<ul class='orderLineItems'>${li}</ul>`;
-  return orderLineItemUpdateMessage;
+  var spanElement = `<span id="orderLineUpdateMessage-${orderLine.id}" style="display: none; height=10px;"></span>`
+  //var orderLineItemUpdateMessage = `<ul class='orderLineItems'>${li}</ul>`;
+  return spanElement;
 }
 
 function formatDateString(dateString) {
