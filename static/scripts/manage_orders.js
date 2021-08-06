@@ -32,20 +32,31 @@ function getCriteriaBasedOnSection(sectionName) {
   var dateMonth = today.getMonth();
   var year = today.getFullYear();
 
+  var startMonth = "";
+  var endMonth = "";
   //adding 1 because in javascript months are 0 indexed
-  var currentMonth = dateMonth + 1;
-  var nextMonth = dateMonth + 2;
-
-  if (currentMonth.length < 2) {
-    currentMonth = "0" + currentMonth;
+  switch(sectionName) {
+    case "currentMonth":
+      startMonth = dateMonth + 1;
+      endMonth = dateMonth + 2;
+      break;
+    case "nextMonth":
+      startMonth = dateMonth + 2;
+      endMonth = dateMonth + 3;
+      break;
+    case "lastMonth":
+      startMonth = dateMonth + 3;
+      endMonth = dateMonth + 4;
+      break;
+    case "allFutureMonths":
+      startMonth = dateMonth + 4;
+      endMonth = dateMonth + 5;
   }
+  (startMonth.length < 2)  ? "0" + startMonth : startMonth;
+  (endMonth.length < 2)  ? "0" + endMonth : endMonth;
 
-  if (nextMonth.length < 2) {
-    nextMonth = "0" + nextMonth;
-  }
-
-  var startDate = `${year}-${currentMonth}-01`; 
-  var endDate = `${year}-${nextMonth}-01`;
+  var startDate = `${year}-${startMonth}-01`; 
+  var endDate = `${year}-${endMonth}-01`;
 
   var criteria = {};
   criteria.customerId =  customerId;
@@ -71,14 +82,19 @@ function fetchOrderLineItems(criteria, sectionName) {
 
 function displayOrderLinesForSection(orderLines, sectionName) {
 
-  //$('#loadMessage').html(`${activeOrders} Orders Found`).addClass('success');
 
   var orderLineItemsListElement = createOrderLinesListElement(orderLines);
   if (orderLineItemsListElement.length < 1) {
-    $('#loadMessage-'+sectionName).html('No Orders Found').addClass('warning');
+    showSectionLoadUpdateMessage(sectionName, "No orders found");
     return;
   }
   appendOrderLineItemsElementToSection(orderLineItemsListElement, sectionName);
+}
+
+function showSectionLoadUpdateMessage(sectionName, messaage) {
+  $('#loadMessage-'+sectionName).html(messaage).addClass('warning');
+  $('#loadMessage-'+sectionName).show();
+  $("#expand-" + sectionName).hide();
 }
 
 function createOrderLinesListElement(orderLines) {
@@ -128,16 +144,6 @@ function appendOrderLineItemsElementToSection(orderLineItemsListElement, section
   toggleCollapseAndExpandButtons(sectionName);
 }
 
-
-/**
- * This function is called from Manage Orders UI when user clicks on "Click To Collapse-"
- * @param {*} sectionName 
- */
-function hideOrderLineItemsForSection(sectionName) {
-  toggleCollapseAndExpandButtons(sectionName);
-  var orderLineItemsTableDiv = $("#orderTable-" + sectionName);
-  orderLineItemsTableDiv.css("display", "none");
-}
 
 function toggleCollapseAndExpandButtons(sectionName) {
   var orderLineTableCollapseDiv = document.getElementById("collapse-" + sectionName);
