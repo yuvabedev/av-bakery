@@ -23,7 +23,10 @@ showOrderLineItemsForSection('currentMonth');
  * @param {} sectionName 
  */
 function showOrderLineItemsForSection(sectionName) {
-  updateSectionTitle(sectionName);
+  //no need to update section title for future months section as it is not dynamic (i.e based on current month)
+  if (sectionName != "allFutureMonths") {
+      updateSectionTitle(sectionName);
+  }
   var criteria = getCriteriaBasedOnSection(sectionName);
   fetchAndDisplayOrderLineItems(criteria, sectionName);
 }
