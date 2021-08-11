@@ -53,7 +53,11 @@ var httpResponse = {};
     criteria.endDate = endDate;
 
     callbackHelper.setResponse(response);
-    orderService.getOrderLineItemsByCustomerIdAndDateRange(criteria, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    if (criteria.endDate != null) {
+      orderService.getOrderLineItemsByCustomerIdAndDateRange(criteria, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    } else {
+      orderService.getOrderLineItemsByCustomerIdAndDeliveryDateLaterThan(criteria, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    }
   });
 
   router.get ('/deliveryLocations' , (request, response) => {

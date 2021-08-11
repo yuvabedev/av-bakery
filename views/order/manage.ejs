@@ -87,6 +87,14 @@
       .form-fields select {
         flex: 1 0 150px;
       }
+
+      h3 {
+        display: inline-block; 
+        font-size: 1.4em; 
+        margin-left: 10px;
+        font-weight: 600;
+        text-transform: none;
+      }
       
     </style>
   </head>
@@ -136,7 +144,7 @@
     </section>
 
     <section id="orders-currentMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
-      <h3>Orders for August</h3>
+      <h3 id="sectionTitle-currentMonth"></h3>
       <div id="loadMessage-currentMonth" style="display: none; margin-top: 10px; height: 40px"></div> 
       <section id="orderTable-currentMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
         <ul class="header">
@@ -147,12 +155,14 @@
         </ul>
         <div id="orderLineItems-currentMonth" />
       </section>
-        <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display:   ;" id="expand-currentMonth">Click to Expand +</a>
+      <div>
+        <a href="javascript:showOrderLineItemsForSection('currentMonth')" style="display: inline;" id="expand-currentMonth">Click to Expand +</a>
         <a href="javascript:hideOrderLineItemsForSection('currentMonth')" style="display: none;" id="collapse-currentMonth">Click to Collapse -</a>
+      </div>
     </section>
 
     <section id="orders-nextMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
-      <h3>Orders for September</h3>
+      <h3 style="display: inline-block;" id="sectionTitle-nextMonth"></h3>
       <div id="loadMessage-nextMonth" style="display: none; margin-top: 10px; height: 40px"></div> 
       <section id="orderTable-nextMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
         <ul class="header">
@@ -163,12 +173,14 @@
         </ul>
         <div id="orderLineItems-nextMonth" />
       </section>
+      <div>
         <a href="javascript:showOrderLineItemsForSection('nextMonth')" style="display: inline;" id="expand-nextMonth">Click to Expand +</a>
         <a href="javascript:hideOrderLineItemsForSection('nextMonth')" style="display: none;" id="collapse-nextMonth">Click to Collapse -</a>
+      </div>
     </section>
 
     <section id="orders-lastMonth" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
-      <h3>Orders for October</h3>
+      <h3 style="display: inline-block;" id="sectionTitle-lastMonth"></h3>
       <div id="loadMessage-lastMonth" style="display: none; margin-top: 10px; height: 40px"></div> 
       <section id="orderTable-lastMonth" class="form-group form-fields" style="white-space:nowrap; display: none;">
         <ul class="header">
@@ -179,9 +191,29 @@
         </ul>
         <div id="orderLineItems-lastMonth" />
       </section>
+      <div>
         <a href="javascript:showOrderLineItemsForSection('lastMonth')" style="display: inline;" id="expand-lastMonth">Click to Expand +</a>
         <a href="javascript:hideOrderLineItemsForSection('lastMonth')" style="display: none;" id="collapse-lastMonth">Click to Collapse -</a>
+      </div>
     </section>
+
+    <section id="orders-allFutureMonths" class="form-group form-fields" style="white-space:nowrap; margin-top: 25px; width: 1200px;">
+      <h3 style="display: inline-block;" id="sectionTitle-allFutureMonths">All Future Orders</h3>
+      <div id="loadMessage-allFutureMonths" style="display: none; margin-top: 10px; height: 40px"></div> 
+      <section id="orderTable-allFutureMonths" class="form-group form-fields" style="white-space:nowrap; display: none;">
+        <ul class="header">
+          <li class="col">Product</li>
+          <li class="col">Quantity</li>
+          <li class="col">Delivery Date</li>
+          <li class="col">Delivery Location</li>
+        </ul>
+        <div id="orderLineItems-allFutureMonths" />
+      </section>
+      <div>
+        <a href="javascript:showOrderLineItemsForSection('allFutureMonths')" style="display: inline;" id="expand-allFutureMonths">Click to Expand +</a>
+        <a href="javascript:hideOrderLineItemsForSection('allFutureMonths')" style="display: none;" id="collapse-allFutureMonths">Click to Collapse -</a>
+      </div>
+    </section>    
   </body>
 
   <script src="scripts/jquery.js"></script>
@@ -193,9 +225,8 @@
 <script>
     $( document ).ready(function() {
         console.log( "ready!" );
-        var urlParams = new URLSearchParams(window.location.search);
-        var customerId = urlParams.get('customerId');
-        //fetchOrderLineItemsForCustomerId(customerId);
+        updateSectionTitle("nextMonth");
+        updateSectionTitle("lastMonth");
     });
   </script>
 </html>

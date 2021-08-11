@@ -23,50 +23,105 @@ showOrderLineItemsForSection('currentMonth');
  * @param {} sectionName 
  */
 function showOrderLineItemsForSection(sectionName) {
+  updateSectionTitle(sectionName);
   var criteria = getCriteriaBasedOnSection(sectionName);
-  fetchOrderLineItems(criteria, sectionName);
+  fetchAndDisplayOrderLineItems(criteria, sectionName);
+}
+
+
+function updateSectionTitle(sectionName) {
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+  var sectionMonth = getSectionMonth(sectionName);
+
+  var sectionMonthName =  monthNames[sectionMonth];
+
+  var sectionTitle = `Orders for ${sectionMonthName}`;
+
+  $("#sectionTitle-" + sectionName).html(sectionTitle);
+}
+
+function getSectionMonth(sectionName) {
+  var today = new Date();
+  var sectionMonth;
+  var todaysMonth = today.getMonth();
+  switch(sectionName) {
+    case "currentMonth":
+      sectionMonth = todaysMonth;
+      break;
+    case "nextMonth":
+      sectionMonth = (todaysMonth + 1) % 12;
+      break;
+    case "lastMonth":
+      sectionMonth = (todaysMonth + 2) % 12;
+      break;
+    case "allFutureMonths":
+      sectionMonth = (todaysMonth + 3) % 12;
+  }
+  return sectionMonth;
+}
+
+/**
+ * Using the time stamp returns an array where array[0] = first day of the month and array[1] is last day of the month
+ * Month is the month embedded in the dateTimeStamp
+ */
+function getTheDateForFirstAndLastDayOfTheMonth(todaysTimeStamp) {
+    var todaysDate = new Date(todaysTimeStamp);
+    var dateForFirstDayOfTheMonth  = new Date(todaysDate.getFullYear(), todaysDate.getMonth(), 1);
+    var dateForLastDayOfTheMonth = new Date(todaysDate.getFullYear(), todaysDate.getMonth() + 1, 0);
+    return [dateForFirstDayOfTheMonth, dateForLastDayOfTheMonth];
 }
 
 function getCriteriaBasedOnSection(sectionName) {
-  var today = new Date();
-  var dateMonth = today.getMonth();
-  var year = today.getFullYear();
-
-  var startMonth = "";
-  var endMonth = "";
-  //adding 1 because in javascript months are 0 indexed
+  var dateArray = getTheDateForFirstAndLastDayOfTheMonth(new Date());
+  var startDate = dateArray[0];
+  var endDate = dateArray[1];
+  var currentMonth = startDate.getMonth();
   switch(sectionName) {
     case "currentMonth":
-      startMonth = dateMonth + 1;
-      endMonth = dateMonth + 2;
+      //This code is redundant but is there for the sake of clarity
+      startDate = startDate;
+      endDate = endDate;
       break;
     case "nextMonth":
-      startMonth = dateMonth + 2;
-      endMonth = dateMonth + 3;
+      startDate = startDate.setMonth(currentMonth + 1);
+      endDate = endDate.setMonth(currentMonth + 1);
       break;
     case "lastMonth":
-      startMonth = dateMonth + 3;
-      endMonth = dateMonth + 4;
+      startDate = startDate.setMonth(currentMonth + 2);
+      endDate = endDate.setMonth(currentMonth + 2);
       break;
     case "allFutureMonths":
-      startMonth = dateMonth + 4;
-      endMonth = dateMonth + 5;
+      startDate = startDate.setMonth(currentMonth + 3);
+      endDate = null;
+      break;
   }
-  (startMonth.length < 2)  ? "0" + startMonth : startMonth;
-  (endMonth.length < 2)  ? "0" + endMonth : endMonth;
-
-  var startDate = `${year}-${startMonth}-01`; 
-  var endDate = `${year}-${endMonth}-01`;
 
   var criteria = {};
   criteria.customerId =  customerId;
-  criteria.startDate = startDate;
-  criteria.endDate = endDate;
+
+  if (isNumeric(startDate)) {
+    startDate = new Date(startDate);
+  }
+
+  if (isNumeric(endDate)) {
+    endDate = new Date(endDate);
+  }
+
+  //Adding 1 to monts since javascript dates are indexed 0
+  criteria.startDate = startDate.getFullYear() + "-" +  (parseInt(startDate.getMonth()) + 1) + "-" +  startDate.getDate();
+  if (endDate != null) {
+    criteria.endDate = endDate.getFullYear() + "-" +  (parseInt(endDate.getMonth()) + 1)  + "-" +  endDate.getDate();
+  }
   return criteria;
 }
 
-function fetchOrderLineItems(criteria, sectionName) {
-  console.log(criteria);
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function fetchAndDisplayOrderLineItems(criteria, sectionName) {
+  console.log(sectionName + ":" + JSON.stringify(criteria));
   $.get('orderLineItems', criteria)
   .done(function (data) {
     console.log('Request Success!!');
@@ -81,8 +136,6 @@ function fetchOrderLineItems(criteria, sectionName) {
 }
 
 function displayOrderLinesForSection(orderLines, sectionName) {
-
-
   var orderLineItemsListElement = createOrderLinesListElement(orderLines);
   if (orderLineItemsListElement.length < 1) {
     showSectionLoadUpdateMessage(sectionName, "No orders found");
@@ -144,6 +197,16 @@ function appendOrderLineItemsElementToSection(orderLineItemsListElement, section
   toggleCollapseAndExpandButtons(sectionName);
 }
 
+
+/**
+ * This function is called from Manage Orders UI when user clicks on "Click To Collapse-"
+ * @param {*} sectionName 
+ */
+ function hideOrderLineItemsForSection(sectionName) {
+  toggleCollapseAndExpandButtons(sectionName);
+  var orderLineItemsTableDiv = $("#orderTable-" + sectionName);
+  orderLineItemsTableDiv.css("display", "none");
+}
 
 function toggleCollapseAndExpandButtons(sectionName) {
   var orderLineTableCollapseDiv = document.getElementById("collapse-" + sectionName);
