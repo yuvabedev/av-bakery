@@ -12,6 +12,9 @@ app.set('view engine', 'ejs');
 
 app.set('views', path.join(__dirname, './views'));
 
+var requestValidator = require('./middleware/RequestValidator');
+app.use('/', requestValidator.validateQueryStringForCustomerId);
+
 const routes = require('./routes');
 //  Connect all our routes to our application
 app.use('/', routes);
@@ -26,6 +29,10 @@ var orderManagementRoutes = require('./router/OrderManagementRouter');
 app.use('/', orderManagementRoutes);
 
 app.use(express.static(path.join(__dirname, './static')));
+
+app.get('*', function(req, res){
+  res.status(404).render('404');
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Express server listening on port ${port}!`);
