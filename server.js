@@ -28,6 +28,10 @@ app.use('/', orderRoutes);
 var orderManagementRoutes = require('./router/OrderManagementRouter');
 app.use('/', orderManagementRoutes);
 
+var reportsRoutes = require('./router/ReportsRouter');
+app.use('/', reportsRoutes);
+
+
 app.use(express.static(path.join(__dirname, './static')));
 
 app.get('*', function(req, res){

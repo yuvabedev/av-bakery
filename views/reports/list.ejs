@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <title>Auroville Bakery: Reports</title>
+    <style>
+      /* Tooltip container */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 60px;
+      }
+
+      .border {
+        border-bottom: 2px dotted black;
+      }
+
+      /* Tooltip text */
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+      
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        z-index: 1;
+      }
+      /* Show the tooltip text when you mouse over the tooltip container */
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+      
+      .reports {
+        list-style-type: none;
+        margin: 0;
+        overflow: hidden;
+        color: #b36653;
+        line-height: 60px;
+      }
+    </style>
+  </head>
+    <body>
+      <div>
+        <h1>Auroville Bakery Order Management</h1>
+        <%- include("../navbar") %>
+        <div class="tooltip border"><h1>Reports</h1>
+          <span class="tooltiptext">Click on a report to execute</span>
+        </div>
+      </div>
+      <div style="margin-top: 50px;">
+        <ul class="reports">
+          <li> <h4><a onclick="javascript:viewReport('daily_product_quantity')">Daily Report By Product</a></h4></li>
+          <li> <h4><a href="/dailyProductQuantity">Daily Report By Product & Location </a><h4></li>
+        </ul>
+      </div>
+    </body>
+    <footer>
+      <script src="scripts/jquery.js"></script>
+      <script src="scripts/reports.js"></script>
+    </footer>
+</html>
