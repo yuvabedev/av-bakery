@@ -5,7 +5,7 @@ routes.get('/', (req, res) => {
 });
 
 routes.get('/customerSearch', (req, res) => {
-  res.render('customer/search.ejs', { pageTitle: 'Search Customer' });
+  res.render('customer/search.ejs');
 });
 
 routes.get('/signup', (req, res) => {
