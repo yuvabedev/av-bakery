@@ -5,7 +5,7 @@
     <!-- set viewport to device width to make site responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="styles/base.css" />
-    <title>AV Bakery: Edit Customer Page</title>
+    <title>Auroville Bakery: Manage Customer Orders</title>
     <style>
       .form-submit {
         line-height: 1.4;
@@ -104,11 +104,14 @@
       <h1>Auroville Bakery Order Management</h1>
     </div>
 
-    <ul style="margin-bottom: 20px;">
-      <li style="display: inline; font-size: 2em; color:#894e3f; margin-right:  750px;" >Manage Orders</li>
-      <li style="display: inline;"><button id="createCustomerOrderButton" class="customer-button" onclick="javascript:createCustomerOrder()">Create Order</button></li>
-    </ul>
-
+    <%- include("../navbar") %>
+    
+    <div>
+      <ul style="margin-bottom: 20px;">
+        <li style="display: inline; font-size: 2em; color:#894e3f; margin-right:  750px;" >Manage Orders</li>
+        <li style="display: inline;"><button id="createCustomerOrderButton" class="customer-button" onclick="javascript:createCustomerOrder()">Create Order</button></li>
+      </ul>
+    </div>
     
     <section class="parent">
       <% var customer = data[0]; %>
