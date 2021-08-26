@@ -4,22 +4,67 @@
     <meta charset="UTF-8" />
     <!-- set viewport to device width to make site responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="styles/base.css" />
     <title>Auroville Bakery: Report</title>
-    <style></style>
+    <style>
+      #wrapper {
+        overflow: hidden; /* will contain if #first is longer than #second */
+        display: flex;
+      }
+      #first {
+          float:left; /* add this */
+      }
+      #second {
+          margin-left: 400px;
+          overflow: hidden; /* if you don't want #second to wrap below #first */
+      }    
+    </style>
   </head>
     <body>
       <div>
         <h1>Auroville Bakery Order Management</h1>
         <%- include("../navbar") %>
+        <div id="reportTitle"></div>
+      <section id="wrapper">
+        <div id="first">
+          <div><h4 id="reportDate" style="color: #b36653;"></h4></div>
+          <div id="reportTable" style="margin-top: 25px;"></div>
+          <span id="reportRunMessage"></span>
+        </div>
+        <div id="second" class="form-fields">
+          <span><input type="text" name="criteriaDate" id="criteriaDate" class="text-input" placeholder="Select another date..."/></span>
+          <input type="hidden" id="reportName" />
+          <button id="runReportButton" class="customer-button" style="margin-top: 20px; display: block;" onclick="javascript:runReport()">
+            Run Report
+          </button>
+        </div>
+      </section>
     </body>
     <footer>
     <script src="scripts/jquery.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
     <script src="scripts/reports.js"></script>
-      <script>
-        var urlParams = new URLSearchParams(window.location.search);
-        var reportName = urlParams.get('report_name');
-        runReport(reportName);
-      </script>
+    <script>
+      var urlParams = new URLSearchParams(window.location.search);
+      var reportName = urlParams.get('report_name');
+      $("#reportName").val(reportName);
+      var today = new Date();
+      //Adding 1 to months since javascript dates are indexed 0
+      var criteriaDate = today.getFullYear() + "-" +  (parseInt(today.getMonth()) + 1) + "-" +  today.getDate();
+      $("#criteriaDate").val(criteriaDate);
+      initReport(reportName, criteriaDate);
+      runReport();
+    </script>
+    <script>
+      //Initializing date picker for start date
+      $( "#criteriaDate" ).datepicker({
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true
+      });      
+    </script>
     </footer>
 </html>

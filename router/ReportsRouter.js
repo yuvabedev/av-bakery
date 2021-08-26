@@ -25,8 +25,18 @@ router.get('/reportView', (request, response) => {
 });
 
 router.get('/reportRun', (request, response) => {
-    var criteriaDate = request.query.criteriaDate;
-    var reportData = reportsService.getProductsAndQuantityGroupedByDate(criteriaDate);
-    response.render('reports/view');
+    var criteriaDate = request.query.date;
+    var reportName = request.query.reportName;
+    console.log(util.format('Executing report: %s for date %s', reportName, criteriaDate));
+    callbackHelper.setResponse(response);
+
+    var reportData = {};
+    switch(reportName) {
+        case "product_quantity_grouped_by_date":
+            reportsService.getProductsAndQuantityGroupedByDate(criteriaDate, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+            break;
+        default:
+            break;
+    }
 });
 module.exports = router;

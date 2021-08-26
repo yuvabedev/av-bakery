@@ -12,16 +12,17 @@ function getProductsAndQuantityGroupedByDate(criteriaDate, callback) {
     
 
 function getQueryForProductsAndQuantityByDate(criteriaDate) {
-    return util.format("SELECT product_name, count(product_name) FROM `order_line` WHERE `delivery_date` = '%s' GROUP BY product_name", criteriaDate);
+    return util.format("SELECT product_name, count(product_name) AS quantity FROM `order_line` WHERE `delivery_date` = '%s' GROUP BY product_name", criteriaDate);
 }
 
 function executeQuery(sql, callback) {
-    console.log(util.format('%s: Executing SQL: %s', filename, sql));
+    console.log(util.format('%s: %s', filename, sql));
     connection.query(sql, function (error, results) {
       if (error) {
         callback(error, results);
       } else {
         callback(error, results);
+        console.log(results);
       }
     });
   }
