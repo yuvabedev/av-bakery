@@ -32,9 +32,12 @@ router.get('/reportRun', (request, response) => {
 
     var reportData = {};
     switch(reportName) {
-        case "product_quantity_grouped_by_date":
-            reportsService.getProductsAndQuantityGroupedByDate(criteriaDate, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+        case "product_quantity":
+            reportsService.getProductsAndQuantityGroupedForDate(criteriaDate, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
             break;
+            case "product_quantity_location":
+                reportsService.getProductsQuantityAndLocationGroupedForDate(criteriaDate, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+                break;            
         default:
             break;
     }

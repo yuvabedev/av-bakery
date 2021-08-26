@@ -5,14 +5,23 @@ var filename = path.basename(__filename);
 
 var connection = require('../db');
 
-function getProductsAndQuantityGroupedByDate(criteriaDate, callback) {
-    var sql = getQueryForProductsAndQuantityByDate(criteriaDate);
+function getProductsAndQuantityGroupedForDate(criteriaDate, callback) {
+    var sql = getQueryForProductQuantityForDate(criteriaDate);
     executeQuery(sql, callback);
+}
+
+function getProductsQuantityAndLocationGroupedForDate(criteriaDate, callback) {
+  var sql = getQueryForProductQuantityLocationByDate(criteriaDate);
+  executeQuery(sql, callback);
 }
     
 
-function getQueryForProductsAndQuantityByDate(criteriaDate) {
-    return util.format("SELECT product_name, count(product_name) AS quantity FROM `order_line` WHERE `delivery_date` = '%s' GROUP BY product_name", criteriaDate);
+function getQueryForProductQuantityForDate(criteriaDate) {
+    return util.format("SELECT product_name, sum(quantity) AS quantity FROM `order_line` WHERE `delivery_date` = '%s' GROUP BY product_name", criteriaDate);
+}
+
+function getQueryForProductQuantityLocationByDate(criteriaDate) {
+  return util.format("SELECT product_name, delivery_location, sum(quantity) AS quantity FROM `order_line` WHERE `delivery_date` = '%s' GROUP BY product_name, delivery_location", criteriaDate);
 }
 
 function executeQuery(sql, callback) {
@@ -28,5 +37,6 @@ function executeQuery(sql, callback) {
   }
 
   module.exports = {
-    getProductsAndQuantityGroupedByDate
+    getProductsAndQuantityGroupedForDate,
+    getProductsQuantityAndLocationGroupedForDate
   };

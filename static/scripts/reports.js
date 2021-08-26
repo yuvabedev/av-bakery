@@ -34,14 +34,22 @@ function runReport() {
 }
 
 function getReportDefinition(reportName) {
-    var product_quantity_grouped_by_date = {};
-    product_quantity_grouped_by_date.title = "Products and Quantity Ordered";
-    product_quantity_grouped_by_date.columns = [ {title:"Product", field:"product_name", width:200}, {title:"Quantity", field:"quantity", width:200}]
+    var product_quantity_report = {};
+    product_quantity_report.title = "Products and Quantity";
+    product_quantity_report.columns = [ {title:"Product", field:"product_name", width:200}, {title:"Quantity", field:"quantity", width:200}];
+
+    var product_quantity_location_report = {};
+    product_quantity_location_report.title = "Products And Quantity By Location";
+    product_quantity_location_report.columns = [ {title:"Product", field:"product_name", width:200}, {title:"Location", field:"delivery_location", width:200}, {title:"Quantity", field:"quantity", width:200}];
+
     switch(reportName) {
-        case "product_quantity_grouped_by_date":
-            return product_quantity_grouped_by_date;
+        case "product_quantity":
+            return product_quantity_report;
+
+        case "product_quantity_location":
+            return product_quantity_location_report;
+            
         default:
-            //return null
             return null;
     } 
 }
