@@ -121,18 +121,21 @@
           </div>
       </div>
       <input type="hidden" id="customerId" value="<%=customer.id%>" />
+      <input type="hidden" id="product_categoty_mapping" value="<%=productCategories%>" />
     </section>
 
     <section id="orderTable" class="form-group form-fields" style="white-space:nowrap;">
       <ul class="header">
-        <li class="col">Product</li>
+        <li class="col">Category</li>
+        <li class="col">Item</li>
         <li class="col">Quantity</li>
         <li class="col">Delivery Date</li>
         <li class="col">Delivery Schedule</li>
         <li class="col">Delivery Location</li>
       </ul>
       <ul>
-        <li style="display:inline"><%- activeProductsDropdown %></li>
+        <li style="display:inline"><%- categoriesDropdown %></li>
+        <li style="display:inline" id="productSelectMenu"></li>
         <li style="display:inline"><input type="text" name="quantity" id="quantity" placeholder="Quantity of bread" class="text-input"></li>
         <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
         <li style="display:inline"><%- deliveryScheduleDropdown %></li>
@@ -155,9 +158,10 @@
   <script>
     //Initializing date picker for start date
     $( "#startDate" ).datepicker({
-    dateFormat: 'dd/mm/yy',
-    changeMonth: true,
-    changeYear: true
-});
+      dateFormat: 'dd/mm/yy',
+      changeMonth: true,
+      changeYear: true
+    });
+    replaceProductDrowpdownWithDefault();
   </script>
 </html>

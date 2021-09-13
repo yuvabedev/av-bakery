@@ -34,24 +34,32 @@ var defaultOptionForDropDown = '<option value="" selected> Please Select...</opt
   callbackHelper.setResponse(response);
   callbackHelper.setView("order/create");
 
-  createActiveProductDropdown(null);
+  createProductCategoryDropdown(null);
   createDeliveryScheduleDropdown(null);
   createDeliveryLocationDropdown(null);
   customerService.fetchCustomer(customerId, 'id', callbackHelper.renderNextView.bind({ error: requestError, data: requestData }));
 });
 
 
-function createActiveProductDropdown(selectedProduct) {
-  var activeProducts = global.activeProducts;
- var dropDown = '<select class="select-menu" name="breads" id="breads">';
- dropDown = dropDown + defaultOptionForDropDown;
- activeProducts.forEach(function(product) {
+router.get('/productsByCategory', (request, response) => {
+  var categoryId = request.query.categoryId;
+  callbackHelper.setResponse(response);
+  productService.getProductsByCategoryId(categoryId, callbackHelper.sendResponse.bind({requestError, requestData}));
+});
+
+
+function createProductCategoryDropdown(selectedCategory) {
+  var productCategories = global.productCategories;
+  var dropDown = '<select class="select-menu" name="categories" id="categories" onChange="updateProductDropdown(this)">';
+  dropDown = dropDown + defaultOptionForDropDown;
+  productCategories.forEach(function(category) {
    var option = '<option value="%s">%s</option>';
-    option = util.format(option, product.id, product.name);
+    option = util.format(option, category.id, category.name);
     dropDown = dropDown + option;
  });
  dropDown = dropDown + "</select>";
- httpResponse.locals.activeProductsDropdown  = dropDown;
+ httpResponse.locals.categoriesDropdown  = dropDown;
+ httpResponse.locals.productCategories  = productCategories;
 }
 
 function createDeliveryScheduleDropdown(error, data) {
@@ -105,7 +113,8 @@ function createDeliveryScheduleDropdown(error, data) {
   });
 
   function validateOrderSchedule(orderSchedule) {
-    if (!callbackHelper.hasValue(orderSchedule.productName)) {
+    if (!callbackHelper.hasValue(orderSchedule.productName) || orderSchedule.productName.includes("Category")
+                                                            || orderSchedule.productName.includes("Item") ) {
       requestError = 'Please select product from the drop down.';
       return false;
     }

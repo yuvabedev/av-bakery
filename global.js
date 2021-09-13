@@ -1,7 +1,7 @@
 var productService = require('./service/ProductService');
 var orderService = require('./service/OrderService');
 
-productService.getAllActiveProducts(setGlobalActiveProducts.bind({ error: requestError, data: requestData }));
+productService.getAllProductCategories(setGlobalProductCategories.bind({ error: requestError, data: requestData }));
 orderService.getDeliveryLocation(setGlobalDeliveryLocations.bind({ error: requestError, data: requestData }));
 orderService.getDeliverySchedule(setGlobalDeliverySchedule.bind({ error: requestError, data: requestData }));
 
@@ -9,12 +9,12 @@ orderService.getDeliverySchedule(setGlobalDeliverySchedule.bind({ error: request
 var requestError = {};
 var requestData = {};
 
-function setGlobalActiveProducts(error, data) {
-    var activeProducts = [];
-    data.forEach(function(product) {
-        activeProducts.push(product);
+function setGlobalProductCategories(error, data) {
+    var productCategories = [];
+    data.forEach(function(category) {
+        productCategories.push(category);
     });
-    global.activeProducts = activeProducts;
+    global.productCategories = productCategories;
 }
 
 function setGlobalDeliveryLocations(error, data) {

@@ -9,10 +9,27 @@ function getAllActiveProducts(callback) {
     var sql = getQueryToSearchProductsByStatus('ACTIVE');
     executeQuery(sql, callback);
 }
-    
+
+function getAllProductCategories(callback) {
+  var sql = getQueryToGetAllProductCategories();
+  executeQuery(sql, callback);
+}
+
+function getProductsByCategoryId(categoryId, callback) {
+  var sql = getQueryToFetchProductsByCategoryId(categoryId);
+  executeQuery(sql, callback);
+}
+
+function getQueryToFetchProductsByCategoryId(categoryId) {
+  return util.format("SELECT * FROM `product` WHERE `category_id` = '%s'", categoryId);
+}
 
 function getQueryToSearchProductsByStatus(status) {
     return util.format("SELECT * FROM `product` WHERE `status` = '%s'", status);
+}
+
+function getQueryToGetAllProductCategories() {
+  return util.format("SELECT * FROM `product_category`");
 }
 
 function executeQuery(sql, callback) {
@@ -27,5 +44,7 @@ function executeQuery(sql, callback) {
   }
 
   module.exports = {
-    getAllActiveProducts
+    getAllActiveProducts,
+    getAllProductCategories,
+    getProductsByCategoryId
   };

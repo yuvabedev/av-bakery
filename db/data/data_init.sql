@@ -3,15 +3,27 @@ INSERT INTO CUSTOMER VALUES (2, 'Jeffrey R. Robles', '1062779', 'Serenity', 'jef
 INSERT INTO CUSTOMER VALUES (3, 'Karen Stone', '1078322', 'Rohini', 'karen@gmail.com', '5803096553', 'ACTIVE', '');
 INSERT INTO CUSTOMER VALUES (4, 'Ann Lopez', '193367', 'Swayam', 'ann@gmail.com', '374174542', 'ACTIVE', '');
 
-INSERT INTO PRODUCT VALUES (1, 'Rye Bread', 'Rye Bread', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (2, 'Sourdough', 'Sourdough', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (3, 'Pumpernickel', 'Pumpernickel', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (4, 'White Bread', 'White Bread', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (5, 'Baguette Bread', 'Baguette Bread', 'INACTIVE', '');
-INSERT INTO PRODUCT VALUES (6, 'Whole Wheat Bread', 'Whole Wheat Bread', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (7, 'Multigrain Bread', 'Multigrain Bread', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (8, 'Brioche Bread', 'Brioche Bread', 'ACTIVE', '');
-INSERT INTO PRODUCT VALUES (9, 'Ciabatta Bread', 'Ciabatta Bread', 'ACTIVE', '');
+
+INSERT INTO PRODUCT_CATEGORY VALUES (1, 'Bread', 'Bread');
+INSERT INTO PRODUCT_CATEGORY VALUES (2, 'Croissant', 'Croissant');
+INSERT INTO PRODUCT_CATEGORY VALUES (3, 'Pastry', 'Pastry');
+
+INSERT INTO PRODUCT VALUES (1, 1, 'Rye Bread', 'Rye Bread', 'ACTIVE', 'ingredients', 'image url');
+INSERT INTO PRODUCT VALUES (2, 1, 'Sourdough', 'Sourdough', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (3, 1, 'Pumpernickel', 'Pumpernickel', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (4, 1, 'White Bread', 'White Bread', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (5, 1, 'Baguette Bread', 'Baguette Bread', 'INACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (6, 1, 'Whole Wheat Bread', 'Whole Wheat Bread', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (7, 1, 'Multigrain Bread', 'Multigrain Bread', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (8, 1, 'Brioche Bread', 'Brioche Bread', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (9, 1, 'Ciabatta Bread', 'Ciabatta Bread', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (10, 2, 'Chocolate Croissant', 'Chocolate Croissant', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (12, 2, 'Butter Croissant', 'Butter Croissant', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (13, 2, 'Almond Croissant', 'Almond Croissant', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (14, 3, 'Choclate Chip Cookie', 'Choclate Chip Cookie', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (15, 3, 'Bear claw', 'Bear claw', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (16, 3, 'Apple Pie', 'Apple Pie', 'ACTIVE', 'ingredients', 'image_url');
+INSERT INTO PRODUCT VALUES (17, 3, 'Baklava', 'Baklava', 'ACTIVE', 'ingredients', 'image_url');
 
 
 INSERT INTO delivery_schedule VALUES (1, 1, 'One Time Delivery');

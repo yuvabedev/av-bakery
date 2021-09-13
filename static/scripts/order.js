@@ -49,8 +49,8 @@ $('#generateOrderLineItems').click(function () {
 function getOrderSchedule() {
   orderSchedule = {};
   orderSchedule.customerId =  $('#customerId').val();
-  orderSchedule.productName = $('#breads').find(":selected").text()
-  orderSchedule.productId = $('#breads').find(":selected").val();
+  orderSchedule.productName = $('#items').find(":selected").text()
+  orderSchedule.productId = $('#items').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').val();
   orderSchedule.startDate = $('#startDate').val();
   orderSchedule.deliverySchedule = $('#deliverySchedule').find(":selected").val();
@@ -140,6 +140,49 @@ function generateOrderLineItemsFromUI(orderSchedule) {
                     "deliveryDate" : deliveryDate, "deliveryLocation": deliveryLocation};
     orderLineItems.push(orderLineItem);
   });
-  console.log(orderLineItems);
   return orderLineItems;
+}
+
+function updateProductDropdown(currentElement) {
+  var categoryId = currentElement.value;
+  if (categoryId == null || categoryId.trim().length < 1) {
+    console.log("No category selected. Product dropdown not updated");
+    replaceProductDrowpdownWithDefault();
+    return;
+  }
+  var criteria = {};
+  criteria.categoryId = categoryId;
+  console.log("Fetching product data for category id " + categoryId);
+  $.get('productsByCategory', criteria)
+  .done(function (data) {
+    console.log('Products fetched for category ' + categoryId);
+    replaceProductDrowpdown(data);
+  })
+  .fail(function (e) {
+    console.log(e);
+    if (e.status == 400) {
+      displayError(e.responseText, "#searchMessage");
+    }
+  });
+}
+
+function replaceProductDrowpdown(products) {
+  var dropDownMenu = '<select class="select-menu" name="items" id="items">';
+  var defaultOptionForDropDown = '<option value="" selected> Now Select Item...</option>';
+  dropDownMenu += defaultOptionForDropDown;
+  products.forEach(function(product) {
+    var selectOption = `<option value="${product.id}">${product.name}</option>`;
+    dropDownMenu += selectOption;
+  });
+  dropDownMenu += "</select>";
+  console.log(dropDownMenu);
+  $("#productSelectMenu").html(dropDownMenu);
+}
+
+function replaceProductDrowpdownWithDefault() {
+  var defaultOptionForDropDown = '<option value="" selected> First Select Category...</option>'
+  var dropDownMenu = '<select class="select-menu" name="items" id="items">';
+  dropDownMenu += defaultOptionForDropDown;
+  dropDownMenu += "</select>";
+  $("#productSelectMenu").html(dropDownMenu);
 }
