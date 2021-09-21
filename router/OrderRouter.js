@@ -19,7 +19,7 @@ var requestError = {};
 var requestData = {};
 var httpResponse = {};
 
-var defaultOptionForDropDown = '<option value="" selected> Please Select...</option>'
+var defaultOptionForDropDown = '<option value="" selected>Select...</option>';
 
 /**
  * handles http request to get a customer with a given id. 
@@ -51,6 +51,7 @@ router.get('/productsByCategory', (request, response) => {
 function createProductCategoryDropdown(selectedCategory) {
   var productCategories = global.productCategories;
   var dropDown = '<select class="select-menu" name="categories" id="categories" onChange="updateProductDropdown(this)">';
+  defaultOptionForDropDown = '<option value="" selected>Select Category...</option>';
   dropDown = dropDown + defaultOptionForDropDown;
   productCategories.forEach(function(category) {
    var option = '<option value="%s">%s</option>';
@@ -99,7 +100,7 @@ function createDeliveryScheduleDropdown(error, data) {
     orderSchedule.productName= request.body.productName;
     orderSchedule.quantity= request.body.quantity;
     orderSchedule.startDate= request.body.startDate;
-    orderSchedule.deliverySchedule= request.body.deliverySchedule;
+    orderSchedule.orderType= request.body.orderType;
     orderSchedule.deliveryLocation= request.body.deliveryLocation;
 
     if (!validateOrderSchedule(orderSchedule)) {
@@ -146,10 +147,6 @@ function createDeliveryScheduleDropdown(error, data) {
       requestError = 'Please select delivery location from the drop down.';
       return false;
     }
-    if (!callbackHelper.hasValue(orderSchedule.deliverySchedule)) {
-      requestError = 'Please select delivery schedule from the drop down.';
-      return false;
-    }
     return true;
   }
 
@@ -160,7 +157,15 @@ function createDeliveryScheduleDropdown(error, data) {
   * @returns 
   */
   function generateOrderLineItems(orderSchedule) {
-    var totalDeliveries = Number(orderSchedule.deliverySchedule);
+    var totalDeliveries = 0;
+
+    console.log("orderSchedule.orderType:" + orderSchedule.orderType);
+
+    if (orderSchedule.orderType == "onetime") {
+      totalDeliveries = 1;
+    } else {
+      totalDeliveries = 12;
+    }
     var orderLineItems = [];
     for (var currentDelivery = 0 ; currentDelivery <totalDeliveries; currentDelivery++) {
       var orderLineItem = {};

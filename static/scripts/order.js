@@ -51,9 +51,10 @@ function getOrderSchedule() {
   orderSchedule.customerId =  $('#customerId').val();
   orderSchedule.productName = $('#items').find(":selected").text()
   orderSchedule.productId = $('#items').find(":selected").val();
-  orderSchedule.quantity =  $('#quantity').val();
+  orderSchedule.quantity =  $('#quantity').find(":selected").val();
   orderSchedule.startDate = $('#startDate').val();
-  orderSchedule.deliverySchedule = $('#deliverySchedule').find(":selected").val();
+  var orderType = $("input[name='orderType']:checked").val();
+  orderSchedule.orderType = orderType;
   orderSchedule.deliveryLocation = $('#deliveryLocation').find(":selected").val();
   return orderSchedule;
 }
@@ -143,6 +144,11 @@ function generateOrderLineItemsFromUI(orderSchedule) {
   return orderLineItems;
 }
 
+/**
+ * This function is called from create.ejs when a category is changed from the category dropdown
+ * @param {} currentElement 
+ * @returns 
+ */
 function updateProductDropdown(currentElement) {
   var categoryId = currentElement.value;
   if (categoryId == null || categoryId.trim().length < 1) {
@@ -168,21 +174,62 @@ function updateProductDropdown(currentElement) {
 
 function replaceProductDrowpdown(products) {
   var dropDownMenu = '<select class="select-menu" name="items" id="items">';
-  var defaultOptionForDropDown = '<option value="" selected> Now Select Item...</option>';
+  var defaultOptionForDropDown = '<option value="" selected>Select Item...</option>';
   dropDownMenu += defaultOptionForDropDown;
   products.forEach(function(product) {
     var selectOption = `<option value="${product.id}">${product.name}</option>`;
     dropDownMenu += selectOption;
   });
   dropDownMenu += "</select>";
-  console.log(dropDownMenu);
   $("#productSelectMenu").html(dropDownMenu);
 }
 
 function replaceProductDrowpdownWithDefault() {
-  var defaultOptionForDropDown = '<option value="" selected> First Select Category...</option>'
+  var defaultOptionForDropDown = '<option value="" selected> Select Item...</option>'
   var dropDownMenu = '<select class="select-menu" name="items" id="items">';
   dropDownMenu += defaultOptionForDropDown;
   dropDownMenu += "</select>";
   $("#productSelectMenu").html(dropDownMenu);
+}
+/**
+ * This function generates quantity dropdown with values from 1 to maxDropdownQuantity
+ * This function is called from create.ejs 
+ */
+function generateQuantityDropdown() {
+  var maxDropdownQuantity = 10;
+  var defaultOptionForDropDown = '<option value="" selected> Select Quantity...</option>';
+  var dropDownMenu = '<select class="select-menu" name="quantity" id="quantity">';
+  dropDownMenu += defaultOptionForDropDown;
+  var drowDownOption;
+  for (drowDownOption = 1; drowDownOption <= maxDropdownQuantity;  drowDownOption++) {
+    var selectOption = `<option value="${drowDownOption}">${drowDownOption}</option>`;
+    dropDownMenu += selectOption;
+  }
+  dropDownMenu += "</select>";
+  $("#quantitySelectMenu").html(dropDownMenu);
+}
+
+function updateOrderType(currentElement) {
+  var orderType = currentElement.value;
+  console.log("Order Type: " + orderType);
+  switch(orderType) {
+    case "onetime" : {
+      updateScreenForOneTimeOrderType();
+      break;
+    }
+    case "regular" : {
+      updateScreenForRegularOrderType();
+      break;
+    }
+  }
+}
+
+function updateScreenForRegularOrderType() {
+  $("#labelDeliveryDate").hide();
+  $("#labelOrderStartDate").show();
+}
+
+function updateScreenForOneTimeOrderType() {
+  $("#labelDeliveryDate").show();
+  $("#labelOrderStartDate").hide();
 }
