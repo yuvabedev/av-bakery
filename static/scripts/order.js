@@ -227,9 +227,11 @@ function updateOrderType(currentElement) {
 function updateScreenForRegularOrderType() {
   $("#labelDeliveryDate").hide();
   $("#labelOrderStartDate").show();
+  $("#labelOrderDeliveryDays").show();  
 }
 
 function updateScreenForOneTimeOrderType() {
   $("#labelDeliveryDate").show();
   $("#labelOrderStartDate").hide();
+  $("#labelOrderDeliveryDays").hide();  
 }
