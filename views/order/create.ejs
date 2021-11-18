@@ -82,7 +82,7 @@
         border: none;
         background: #f7f7f7;
         width: 200px;
-        overflow: scroll;
+        overflow: auto;
       }
       
       .select2-container {
@@ -183,7 +183,9 @@
           </select>
         </li>
         <li style="display:inline"><%- deliveryLocationDropdown %></li>
-        <li style="display:inline; margin-left: 20px;"><button id="generateOrderLineItems" class="customer-button">Generate</button></li>
+      </ul>
+      <ul>
+        <li style="display:inline;"><button id="generateOrderLineItems" class="customer-button">Generate</button></li>
         <li style="display:inline; margin-left: 10px;"><button id="cancelOrderSchedule" class="customer-button" onclick="javascript:manageCustomerOrder('<%= customer.id %>')">Cancel</button></li>
       </ul>
       <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span> 
