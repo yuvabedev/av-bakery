@@ -5,6 +5,7 @@
     <!-- set viewport to device width to make site responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="styles/base.css" />
+    <link rel="stylesheet" type="text/css" href="styles/select2.min.css" />
     <title>Auroville Bakery: Create Customer Order</title>
     <style>
       .form-submit {
@@ -77,6 +78,29 @@
         text-align:left;      
       }
 
+      .select2-container--default .select2-selection--multiple {
+        border: none;
+        background: #f7f7f7;
+        width: 200px;
+        overflow: scroll;
+      }
+      
+      .select2-container {
+        vertical-align:top;
+        color: #999;
+        background: #f7f7f7;
+        border: 1px solid #e1e1e1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9em;
+        text-decoration: none;
+        line-height: normal;
+        max-height: 3em;
+      }
+
+      .select2-search__field {
+        background: #f7f7f7;
+      }
 
     </style>
   </head>
@@ -140,7 +164,7 @@
         <li class="col">Quantity</li>
         <li class="col" id="labelDeliveryDate">Delivery Date</li>
         <li class="col" style="display: none;" id="labelOrderStartDate">Order Start Date</li>
-        <li class="col" style="display: none;" id="labelOrderStartDate">Order Days</li>
+        <li class="col" style="display: none;" id="labelOrderDeliveryDays">Order Days</li>
         <li class="col">Delivery Location</li>
       </ul>
       <ul>
@@ -148,6 +172,16 @@
         <li style="display:inline" id="productSelectMenu"></li>
         <li style="display:inline;" id="quantitySelectMenu"></li>
         <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
+        <li style="display:none;" id="orderDeliveryDays">
+          <select name="orderDeliveryDays" multiple="multiple" id="orderDeliveryDaysSelect">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+          </select>
+        </li>
         <li style="display:inline"><%- deliveryLocationDropdown %></li>
         <li style="display:inline; margin-left: 20px;"><button id="generateOrderLineItems" class="customer-button">Generate</button></li>
         <li style="display:inline; margin-left: 10px;"><button id="cancelOrderSchedule" class="customer-button" onclick="javascript:manageCustomerOrder('<%= customer.id %>')">Cancel</button></li>
@@ -162,6 +196,7 @@
   <script src="scripts/jquery.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="scripts/select2.min.js"></script>
   <script src="scripts/customer.js"></script>
   <script src="scripts/order.js"></script>
   <script>
@@ -173,5 +208,10 @@
     });
     replaceProductDrowpdownWithDefault();
     generateQuantityDropdown();
+    $('#orderDeliveryDaysSelect').select2({
+      placeholder: 'Select Delivery Days...',
+      closeOnSelect: false
+    });
+    $(".select2-container").hide();
   </script>
 </html>
