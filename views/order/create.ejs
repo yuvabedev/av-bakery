@@ -97,11 +97,6 @@
         line-height: normal;
         max-height: 3em;
       }
-
-      .select2-search__field {
-        background: #f7f7f7;
-      }
-
     </style>
   </head>
 
@@ -211,9 +206,15 @@
     replaceProductDrowpdownWithDefault();
     generateQuantityDropdown();
     $('#orderDeliveryDaysSelect').select2({
-      placeholder: 'Select Delivery Days...',
-      closeOnSelect: false
+      placeholder: 'Select Delivery Days',
     });
+    
     $(".select2-container").hide();
+
+    $('#orderDeliveryDaysSelect').on('select2:opening select2:closing', function( event ) {
+      var $searchfield = $(this).parent().find('.select2-search__field');
+      $searchfield.prop('disabled', true);
+    });
+    
   </script>
 </html>
