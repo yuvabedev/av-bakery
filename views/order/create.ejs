@@ -168,7 +168,7 @@
         <li style="display:inline;" id="quantitySelectMenu"></li>
         <li style="display:inline"><input type="text" name="startDate" id="startDate" placeholder="Delivery Start Date" class="text-input"></li>
         <li style="display:none;" id="orderDeliveryDays">
-          <select name="orderDeliveryDays" multiple="multiple" id="orderDeliveryDaysSelect">
+          <select name="orderDeliveryDays" multiple="multiple" id="orderDeliveryDaysDropdown">
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -196,6 +196,8 @@
   <script src="scripts/select2.min.js"></script>
   <script src="scripts/customer.js"></script>
   <script src="scripts/order.js"></script>
+  <script src="scripts/validate_order.js"></script>
+
   <script>
     //Initializing date picker for start date
     $( "#startDate" ).datepicker({
@@ -205,16 +207,18 @@
     });
     replaceProductDrowpdownWithDefault();
     generateQuantityDropdown();
-    $('#orderDeliveryDaysSelect').select2({
+    $('#orderDeliveryDaysDropdown').select2({
       placeholder: 'Select Delivery Days',
     });
     
     $(".select2-container").hide();
 
-    $('#orderDeliveryDaysSelect').on('select2:opening select2:closing', function( event ) {
+    $('#orderDeliveryDaysDropdown').on('select2:opening select2:closing', function( event ) {
       var $searchfield = $(this).parent().find('.select2-search__field');
       $searchfield.prop('disabled', true);
     });
+
+    $("#orderDeliveryDaysDropdown").prop("disabled", true);
     
   </script>
 </html>
