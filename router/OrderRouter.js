@@ -66,7 +66,7 @@ function createProductCategoryDropdown(selectedCategory) {
 function createDeliveryScheduleDropdown(error, data) {
   var deliverySchedule = global.deliverySchedule;
   var dropDown = '<select class="select-menu" name="deliverySchedule" id="deliverySchedule">';
-  dropDown = dropDown + defaultOptionForDropDown;
+  defaultOptionForDropDown = '<option value="" selected>Select Location...</option>';
   deliverySchedule.forEach(function(schedule) {
     var option = '<option value="%s">%s</option>';
     option = util.format(option, schedule.total_deliveries, schedule.description);
@@ -86,6 +86,7 @@ function createDeliveryScheduleDropdown(error, data) {
     dropDown = dropDown + option;
   });
   dropDown = dropDown + "</select>";
+
   httpResponse.locals.deliveryLocationDropdown  = dropDown;
  }
 
