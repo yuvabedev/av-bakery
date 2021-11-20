@@ -217,8 +217,9 @@
       var $searchfield = $(this).parent().find('.select2-search__field');
       $searchfield.prop('disabled', true);
     });
-
-    $("#orderDeliveryDaysDropdown").prop("disabled", true);
     
+    //Disabling the order delivery days dropdown when the page is first loaded. It is enabled when user selects the order start date
+    $("#orderDeliveryDaysDropdown").prop("disabled", true);
+
   </script>
 </html>
