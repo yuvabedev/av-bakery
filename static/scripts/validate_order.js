@@ -7,19 +7,16 @@ weekdays[4] = "Thursday";
 weekdays[5] = "Friday";
 weekdays[6] = "Saturday";
 
+var itemsToKeep = new Array(1);
 
 $("#orderDeliveryDays").mouseover(function() {
     if ($("#orderDeliveryDaysDropdown").is(':disabled')) {
-        $("#orderDeliveryDays").css('cursor','pointer').attr('title', 'First select order start date');
-
-        var saveMessage = $('#saveMessage');
-        saveMessage.html("First select order start date").addClass('warning');
-        setTimeout(function(){
-            saveMessage.html('');
-            saveMessage.removeClass('warning');
-          }, 2000);
+        var warningMessage = 'First select order start date';
+        $("#orderDeliveryDays").css('cursor','pointer').attr('title', warningMessage);
+        displayMessage(warningMessage);
     }
 });
+
 
 $('#startDate').change(function() {
     var startDate = $('#startDate').val();
@@ -37,6 +34,22 @@ $('#startDate').change(function() {
 });
 
 
+$('#orderDeliveryDaysDropdown').on('select2:unselecting', function(event) {
+    var valueUnselected = event.params.args.data.text;
+
+    if (itemsToKeep.indexOf(valueUnselected) > -1) {
+        event.preventDefault();
+        var startDate = $('#startDate').val();
+        var warningMessage = `${valueUnselected} can not be removed. It falls on the delivery start date ${startDate}`;
+        console.log(warningMessage);
+        displayMessage(warningMessage);
+        return;
+    }
+    
+    console.log(`Order delivery day removed ${valueUnselected}`);
+
+});
+
 function enableOrderDeliveryDaysDropdown() {
     $("#orderDeliveryDaysDropdown").prop("disabled", false);
 }
@@ -48,12 +61,15 @@ function disableOrderDeliveryDaysDropdown() {
 /** Auto populates the order delivery day dropdown by adding the week day that corresponds to the order start date selected by user */
 function autoPopulateOrderDeliveryDate(dayOfWeek) {
     $("#orderDeliveryDaysDropdown").val(dayOfWeek).trigger('change');
+    if (dayOfWeek != null && dayOfWeek.length > 0) {
+        itemsToKeep = [];
+        itemsToKeep.push(dayOfWeek);
+    }
 }
 
 /** Returns the week day on which date string falls on. For example, 20/11/2021 falls on a Saturday 
  * so, Satudarday is returned.
 */
-
 function getWeekDayFromDate(dateString) {
     var dateAttributes = dateString.split("/");
     //dateAttributes[0] => day of the month, dateAttributes[1] => month, dateAttributes[2] => year
@@ -62,4 +78,13 @@ function getWeekDayFromDate(dateString) {
     var dateObject = new Date(timestamp);
     var dayOfWeek = weekdays[dateObject.getDay()];
     return dayOfWeek;
+}
+
+function displayMessage(message) {
+    var saveMessage = $('#saveMessage');
+    saveMessage.html(message).addClass('warning');
+    setTimeout(function(){
+        saveMessage.html('');
+        saveMessage.removeClass('warning');
+      }, 2000);
 }
