@@ -15,6 +15,8 @@ var callbackHelper = require('./CallbackHelper');
 
 var DATE_FORMAT = "DD/MM/YYYY";
 
+var DATE_FORMAT_ORDER_LINE_ITEM = "MMM Do, YYYY (ddd)";
+
 var requestError = {};
 var requestData = {};
 var httpResponse = {};
@@ -91,12 +93,12 @@ function createDeliveryScheduleDropdown(error, data) {
  }
 
 
- /**
- * handles http request to get a customer with a given id. 
- * The id provided as query param: /customerEdit?id={id}
- * returns the json representing customer object
- */
-  router.post('/orderLineItemsGenerate', (request, response) => {
+    /**
+     * Handles the HTTP request for generating the order line items from order schedule.
+     * The order schedule is posted as a JSON object.
+     * Order line items are returned as JSON array.
+     */  
+    router.post('/orderLineItemsGenerate', (request, response) => {
     var orderSchedule = {};
     orderSchedule.productName= request.body.productName;
     orderSchedule.quantity= request.body.quantity;
@@ -152,34 +154,56 @@ function createDeliveryScheduleDropdown(error, data) {
   }
 
  /**
-  * Using order schedule creates an array of line items for the schedule
-  * The number of line items = orderSchedule.deliverySchedule
+  * Using order schedule creates an array of order line items.
+  * If the orderType is one time then only 1 order line item is generated.
+  * If the ordertype is regular then order line items for 12 weeks are generated.
+  * For regular type order the total number of order line items are 12 X number of days in the week for which the delivery is requested.
   * @param {*} orderSchedule 
   * @returns 
   */
   function generateOrderLineItems(orderSchedule) {
-    var totalDeliveries = 0;
 
     console.log("orderSchedule.orderType:" + orderSchedule.orderType);
+    var orderLineItems = [];
 
     if (orderSchedule.orderType == "onetime") {
-      totalDeliveries = 1;
+      orderLineItems = generateOrderLineItemForOneTimeDelivery(orderSchedule);
     } else {
-      totalDeliveries = 12;
-    }
-    var orderLineItems = [];
-    for (var currentDelivery = 0 ; currentDelivery <totalDeliveries; currentDelivery++) {
-      var orderLineItem = {};
-      orderLineItem.productName = orderSchedule.productName;
-      orderLineItem.quantity = orderSchedule.quantity;
-      var numDaysToAdd = currentDelivery * 7;
-      var nextDeliveryDate = moment(orderSchedule.startDate, DATE_FORMAT).add(numDaysToAdd, 'days').format(DATE_FORMAT);
-      orderLineItem.deliveryDate = nextDeliveryDate;
-      orderLineItem.deliveryLocation = orderSchedule.deliveryLocation;
-      orderLineItems.push(orderLineItem);
+      orderLineItems = generateOrderLineItemForRegularDelivery(orderSchedule);
     }
     return orderLineItems;
  }
+
+  function generateOrderLineItemForOneTimeDelivery(orderSchedule) {
+    var orderLineItem = {};
+    orderLineItem.productName = orderSchedule.productName;
+    orderLineItem.quantity = orderSchedule.quantity;
+    var nextDeliveryDate = moment(orderSchedule.startDate, DATE_FORMAT).format(DATE_FORMAT_ORDER_LINE_ITEM);
+    orderLineItem.deliveryDate = nextDeliveryDate;
+    orderLineItem.deliveryLocation = orderSchedule.deliveryLocation;
+
+    var orderLineItems = [];
+    orderLineItems.push(orderLineItem);
+    return orderLineItems;
+  }
+
+  function generateOrderLineItemForRegularDelivery(orderSchedule) {
+    var deliveryWeeks = 12;
+    var currentDeliveryWeek = 0;
+    var orderLineItems = [];
+
+    for (currentDeliveryWeek = 0 ; currentDeliveryWeek < deliveryWeeks; currentDeliveryWeek++) {
+      var orderLineItem = {};
+      orderLineItem.productName = orderSchedule.productName;
+      orderLineItem.quantity = orderSchedule.quantity;
+      var numDaysToAdd = currentDeliveryWeek * 7;
+      var nextDeliveryDate = moment(orderSchedule.startDate, DATE_FORMAT).add(numDaysToAdd, 'days').format(DATE_FORMAT_ORDER_LINE_ITEM);
+      orderLineItem.deliveryDate = nextDeliveryDate;
+      orderLineItem.deliveryLocation = orderSchedule.deliveryLocation;
+      orderLineItems.push(orderLineItem);   
+    }
+    return orderLineItems;
+  }
 
  function convertLineItemsToHTML(orderLineItems) {
    var orderLineItemsUL = "";
@@ -203,12 +227,11 @@ function createDeliveryScheduleDropdown(error, data) {
    });
    return orderLineItemsUL;
  }
- /**
- * handles http request to get a customer with a given id. 
- * The id provided as query param: /customerEdit?id={id}
- * returns the json representing customer object
- */
-  router.post('/orderScheduleSave', (request, response) => {
+    /**
+     * Handles the HTTP request for saving the order schedule. 
+     * Order Schedule is posted as JSON
+     */
+     router.post('/orderScheduleSave', (request, response) => {
     callbackHelper.setResponse(response);
     console.log("saving order schedule...");
     var orderSchedule = {};
@@ -224,11 +247,10 @@ function createDeliveryScheduleDropdown(error, data) {
     orderService.saveOrderSchedule(orderSchedule, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }))
   });
 
-   /**
- * handles http request to get a customer with a given id. 
- * The id provided as query param: /customerEdit?id={id}
- * returns the json representing customer object
- */
+    /**
+     * Handles the HTTP request for saving the order line items. 
+     * Order line items are posted as JSON array
+     */
     router.post('/orderLineItemsSave', (request, response) => {
       callbackHelper.setResponse(response);
       console.log("saving order line items...");

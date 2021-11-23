@@ -36,10 +36,10 @@ var httpResponse = {};
   });
 
   /**
- * handles http request to get a customer with a given id. 
- * The id provided as query param: /customerEdit?id={id}
- * returns the json representing customer object
- */
+  * handles http request to get order line items for a customer with a given id. 
+  * The id provided as query param: /customerEdit?id={id}
+  * returns the json representing customer object
+  */
  router.get('/orderLineItems', (request, response) => {
     console.log("Fetching order line items with criteria " + JSON.stringify(request.query));
     

@@ -6,9 +6,7 @@ var customerId = urlParams.get('customerId');
 
 $.get('deliveryLocations')
 .done(function (data) {
-  console.log('Delovery locations loaded....');
   deliveryLocations = data;
-  console.log(deliveryLocations);
 })
 .fail(function (e) {
   console.log(e);
@@ -123,6 +121,12 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+/**
+ * Fetches the order line items from service using an API call
+ * Displays the fetched order line items on the UI
+ * @param {*} criteria 
+ * @param {*} sectionName 
+ */
 function fetchAndDisplayOrderLineItems(criteria, sectionName) {
   console.log(sectionName + ":" + JSON.stringify(criteria));
   $.get('orderLineItems', criteria)
@@ -233,6 +237,12 @@ function getULForUpdateMessage(orderLine) {
   return spanElement;
 }
 
+/**
+ * This function converts the date format YYYY-MM-DD  into MMM DD, YYYY
+ * So, the date 2021-11-30 is converted to Dec 01,2021
+ * @param {*} dateString 
+ * @returns 
+ */
 function formatDateString(dateString) {
   var timeStamp = Date.parse(dateString);
   var dateObject = new Date(timeStamp);

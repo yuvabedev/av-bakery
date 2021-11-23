@@ -95,6 +95,10 @@ $("#confirmOrderSchedule").click(function() {
   saveOrderSchedule(orderSchedule);
 });
 
+/**
+ * Makes the ajax calls to save order schedule. The success callback makes the ajax call to save line items
+ * @param {*} orderSchedule 
+ */
 function saveOrderSchedule(orderSchedule) {
   console.log("Saving order schedule...");
   $.post('orderScheduleSave', orderSchedule)
@@ -110,6 +114,10 @@ function saveOrderSchedule(orderSchedule) {
     });
 }
 
+/**
+ * Makes the ajax call to save order line items
+ * @param {*} savedOrderSchedule 
+ */
 function saveOrderLineItems(savedOrderSchedule) {
      var orderLineItems = generateOrderLineItemsFromUI(savedOrderSchedule);
      $.post('orderLineItemsSave', {"orderLineItems":JSON.stringify(orderLineItems)})
