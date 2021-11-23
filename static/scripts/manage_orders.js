@@ -314,7 +314,7 @@ function createDeliveryLocationDropdown(selectedLocation, orderLineItemId) {
    var editedDeliveryLocation = $('#deliveryLocation-'+orderLineItemId).find(":selected").val();
 
    if (previousDeliveryLocation != editedDeliveryLocation) {
-    updateMessage += `<BR>DeliveryLocation updated from ${previousDeliveryLocation} to ${editedDeliveryLocation}`;
+    updateMessage += `<BR>Delivery location updated from ${previousDeliveryLocation} to ${editedDeliveryLocation}`;
     updateMade = true;
   }
 
