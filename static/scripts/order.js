@@ -46,6 +46,10 @@ $('#generateOrderLineItems').click(function () {
   generateOrderLines(orderSchedule);
 });
 
+/**
+ * 
+ * @returns Generates the orderSchedule javascript object
+ */
 function getOrderSchedule() {
   orderSchedule = {};
   orderSchedule.customerId =  $('#customerId').val();
@@ -53,17 +57,35 @@ function getOrderSchedule() {
   orderSchedule.productId = $('#items').find(":selected").val();
   orderSchedule.quantity =  $('#quantity').find(":selected").val();
   orderSchedule.startDate = $('#startDate').val();
+  orderSchedule.orderDeliveryDays = getOrderDeliveryDays($('#orderDeliveryDaysDropdown').val());
   var orderType = $("input[name='orderType']:checked").val();
   orderSchedule.orderType = orderType;
   orderSchedule.deliveryLocation = $('#deliveryLocation').find(":selected").val();
   return orderSchedule;
 }
 
+/**
+ * Creates a csv of order delivery days from the order delivery days dropdown
+ * @param {*} orderDeliveryDays 
+ * @returns 
+ */
+function getOrderDeliveryDays(orderDeliveryDays) {
+  if (orderDeliveryDays.length < 1) return '';
+  
+  var orderDeliveryDaysText = '';
+  orderDeliveryDays.forEach(function(value) {
+    orderDeliveryDaysText += `${value},` ;
+  });
+
+  //trimming off the last , from orderDeliveryDaysText
+  return orderDeliveryDaysText.substring(0, orderDeliveryDaysText.length - 1);
+}
+
 function generateOrderLines(orderSchedule) {
-  console.log("Generating line items from order schedule...");
+  console.log("Generating line items from order schedule.");
   $.post('orderLineItemsGenerate', orderSchedule)
     .done(function (data) {
-      console.log('Order Line Items generated...');
+      console.log('Order Line Items generated.');
       appendLineItemsToOrderSchedule(data);
     })
     .fail(function (e) {
@@ -74,17 +96,28 @@ function generateOrderLines(orderSchedule) {
     });
 }
 
+/**
+ * Appents the HTML containing the UL for order line items to the order schedule section of create order UI
+ * @param {*} orderLineItemsUL 
+ */
 function appendLineItemsToOrderSchedule(orderLineItemsUL) {
       var orderLineItemsDiv = $("#orderLineItems");
       $(orderLineItemsUL).prependTo(orderLineItemsDiv);
       orderLineItemsDiv.show();
 }
 
+/**
+ * Removes an order line item from UI
+ * @param {} currentElement 
+ */
 function removeOrderLineItem(currentElement) {
     var ulElement = $(currentElement).closest('ul');
     ulElement.remove();
 }
 
+/**
+ * When using presses the confirm button to verify that the order line items generated from the order schedule are correct this code is executed.
+ */
 $("#confirmOrderSchedule").click(function() {
   var orderSchedule = getOrderSchedule();
 
@@ -134,6 +167,11 @@ function saveOrderLineItems(savedOrderSchedule) {
     window.location.href = `/orderManage?customerId=${customerId}`;
  }
 
+/**
+ * Creates the object that encapsulates an order line item being displayed on UI
+ * @param {*} orderSchedule 
+ * @returns 
+ */
 function generateOrderLineItemsFromUI(orderSchedule) {
   var orderLineItems = [];
   $('#orderLineItems').children('ul').each(function () {  

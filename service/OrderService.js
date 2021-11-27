@@ -110,7 +110,6 @@ function executeQuery(sql, callback) {
       if (error) {
         callback(error, results);
       } else {
-        console.log(results);
         callback(error, results);
       }
     });
@@ -122,7 +121,6 @@ function executeQuery(sql, callback) {
       if (error) {
         callback(error, results);
       } else {
-        console.log(results);
         returnById(results.insertId, tableName, callback);
       }
     });

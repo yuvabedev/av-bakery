@@ -103,6 +103,7 @@ function createDeliveryScheduleDropdown(error, data) {
     orderSchedule.productName= request.body.productName;
     orderSchedule.quantity= request.body.quantity;
     orderSchedule.startDate= request.body.startDate;
+    orderSchedule.orderDeliveryDays= (request.body.orderDeliveryDays).split(',');
     orderSchedule.orderType= request.body.orderType;
     orderSchedule.deliveryLocation= request.body.deliveryLocation;
 
@@ -191,19 +192,86 @@ function createDeliveryScheduleDropdown(error, data) {
     var deliveryWeeks = 12;
     var currentDeliveryWeek = 0;
     var orderLineItems = [];
+    var orderDeliveryDaysRearranged = rearrangeOrderDeliveryDaysToBeginWithOrderStartDay(orderSchedule);
+    console.log("orderDeliveryDays:" + orderDeliveryDaysRearranged);
 
     for (currentDeliveryWeek = 0 ; currentDeliveryWeek < deliveryWeeks; currentDeliveryWeek++) {
-      var orderLineItem = {};
-      orderLineItem.productName = orderSchedule.productName;
-      orderLineItem.quantity = orderSchedule.quantity;
-      var numDaysToAdd = currentDeliveryWeek * 7;
-      var nextDeliveryDate = moment(orderSchedule.startDate, DATE_FORMAT).add(numDaysToAdd, 'days').format(DATE_FORMAT_ORDER_LINE_ITEM);
-      orderLineItem.deliveryDate = nextDeliveryDate;
-      orderLineItem.deliveryLocation = orderSchedule.deliveryLocation;
-      orderLineItems.push(orderLineItem);   
+      var orderLineItemsForWeek = getOrderLineItemsForWeek(currentDeliveryWeek, orderSchedule, orderDeliveryDaysRearranged);
+      console.log(orderLineItemsForWeek);
+      orderLineItems.push(...orderLineItemsForWeek);   
     }
     return orderLineItems;
   }
+
+  function rearrangeOrderDeliveryDaysToBeginWithOrderStartDay(orderSchedule) {
+      var orderDeliveryDays = orderSchedule.orderDeliveryDays;
+      //No need to re arrange order delivery days if there is only 1 order delivery day
+      if (orderDeliveryDays.length < 2) return orderDeliveryDays;
+
+      var orderStartDayOfWeek = moment(orderSchedule.startDate, DATE_FORMAT).format('dddd');
+      var indexOfOrderStartDayOfWeek = orderDeliveryDays.indexOf(orderStartDayOfWeek);
+
+      console.log("orderStartDayOfWeek:" + orderStartDayOfWeek + " indexOfOrderStartDayOfWeek:" + indexOfOrderStartDayOfWeek);
+
+      if (indexOfOrderStartDayOfWeek == 0) return orderDeliveryDays;
+      var firstArray = orderDeliveryDays.slice(indexOfOrderStartDayOfWeek);
+      //console.log("firstArray:" + firstArray);
+
+      var secondArray = orderDeliveryDays.slice(0, indexOfOrderStartDayOfWeek);
+      //console.log("secondArray:" + secondArray);
+      
+      return firstArray.concat(secondArray);
+  }
+
+  function getOrderLineItemsForWeek(currentDeliveryWeek, orderSchedule, orderDeliveryDaysRearranged) {
+    var orderLineItemsForWeek = [];
+    orderDeliveryDaysRearranged.forEach(function(currentOrderDeliveryDay) {
+      var orderLineItemForCurrentDeliveryDay = {};
+      orderLineItemForCurrentDeliveryDay.productName = orderSchedule.productName;
+      orderLineItemForCurrentDeliveryDay.quantity = orderSchedule.quantity;
+      var deliveryDate = getOrderDeliveryDate(orderSchedule.startDate, currentDeliveryWeek,currentOrderDeliveryDay).format(DATE_FORMAT_ORDER_LINE_ITEM);
+      orderLineItemForCurrentDeliveryDay.deliveryDate = deliveryDate;
+      orderLineItemForCurrentDeliveryDay.deliveryLocation = orderSchedule.deliveryLocation;
+      orderLineItemsForWeek.push(orderLineItemForCurrentDeliveryDay);
+    });
+    return orderLineItemsForWeek;
+  }
+  function getOrderDeliveryDate(orderStartDate, currentDeliveryWeek, currentOrderDeliveryDay) {
+    var difference = differenceBetweenPreviousDeliveryDayAndCurrentDeliveryDay(orderStartDate, currentOrderDeliveryDay);
+    var numDaysToAdd = (7 * currentDeliveryWeek) + difference;
+    console.log(currentOrderDeliveryDay + ":" + numDaysToAdd);
+    var deliveryDate = moment(orderStartDate, DATE_FORMAT).add(numDaysToAdd, 'days');;
+    return deliveryDate;
+  }
+  /**
+   * this function calculate how many days are present between the day of the week on which order delivery starts and the current order delivery day
+   * Example: If order delivery days are Wednesday, Friday and Saturday then the day of the week on which delivery starts is Wednesday
+   * If current delivery day is currentOrderDeliveryDay then 0 is returned because wednesday.
+   * If current delivery day is Friday then 2 is returned because Friday is 2 days after Wednesday
+   * If current delivery day is Saturday then 3 is returned because Saturday is 3 days after Wednesday
+  */
+  function differenceBetweenPreviousDeliveryDayAndCurrentDeliveryDay(orderStartDate, currentOrderDeliveryDay) {
+    let daysOfWeekToPosition = new Map([
+      ['Monday', '1'],
+      ['Tuesday', '2'],
+      ['Wednesday', '3'],
+      ['Thursday', '4'],
+      ['Friday', '5'],
+      ['Saturday', '6'],
+      ['Sunday', '7']
+    ]);
+    var positionOfDayOfWeekForPreviousDeliveryDate = moment(orderStartDate, DATE_FORMAT).weekday();
+    var positionOfCurrentOrderDeliveryDay = daysOfWeekToPosition.get(currentOrderDeliveryDay);
+
+    var difference = (positionOfDayOfWeekForPreviousDeliveryDate > positionOfCurrentOrderDeliveryDay) ? 
+                    (7 - (positionOfDayOfWeekForPreviousDeliveryDate - positionOfCurrentOrderDeliveryDay)) :
+                   (positionOfCurrentOrderDeliveryDay - positionOfDayOfWeekForPreviousDeliveryDate);
+
+    return difference;
+  }
+  
+
+
 
  function convertLineItemsToHTML(orderLineItems) {
    var orderLineItemsUL = "";
