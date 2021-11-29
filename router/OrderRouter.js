@@ -332,7 +332,7 @@ function createDeliveryScheduleDropdown(error, data) {
     function saveOrderLineItems(orderLineItems) {
       orderLineItems.forEach(function(orderLineItem) {
         orderLineItem.notes = callbackHelper.convertToEmptyIfUndefined(orderLineItem.notes);
-        orderLineItem.deliveryDate = moment(orderLineItem.deliveryDate, DATE_FORMAT).format('YYYY-MM-DD');
+        orderLineItem.deliveryDate = moment(orderLineItem.deliveryDate, DATE_FORMAT_ORDER_LINE_ITEM).format('YYYY-MM-DD');
         orderLineItem.status = 'ACTIVE';
         orderService.saveOrderLineItem(orderLineItem, callbackHelper.logSavedObject.bind({ error: requestError, data: requestData }));
       });
