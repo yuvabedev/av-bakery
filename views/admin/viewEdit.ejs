@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+
+    <style>
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 400px;
+    }
+    </style>
+
+        
+        
+    <title>AV Bakery Order Management: View/Edit Admin User</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div>
+        <h1>Auroville Bakery Order Management</h1>
+        <div style="margin-bottom: 40px; padding-top: 20px;">
+            <ul class="navbar" style="background-color: #f6ddce;padding-left: 800px;">
+              </ul>
+            </div>
+      </div>
+      <div class="center form-group">
+        <div style="margin-bottom: 20px; margin-left: auto; margin-right: auto; width: 320px;">
+            <h2>Admin User</h2>
+        </div>
+        <% var adminUser = data[0];%>
+        <input type="hidden" name="adminId" id="adminId" value="<%= adminUser.id %>"/>
+        <ul class="form-fields">
+            <li>
+              <label>Name</label> <%= adminUser.name %>
+            </li>           
+            <li>
+              <label>Login Id</label><%= adminUser.login_id %> </label>
+            </li>
+            <li>
+                <label>Reset Password</label>
+            </li>
+          </ul>
+    </div>
+    </body>
+    <footer>
+      <script src="scripts/jquery.js"></script>
+      <script src="scripts/admin.js"></script>
+    </footer>  
+</html>

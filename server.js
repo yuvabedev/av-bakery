@@ -31,6 +31,9 @@ app.use('/', orderManagementRoutes);
 var reportsRoutes = require('./router/ReportsRouter');
 app.use('/', reportsRoutes);
 
+var loginRoutes = require('./router/LoginRouter');
+app.use('/', loginRoutes);
+
 
 app.use(express.static(path.join(__dirname, './static')));
 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+
+    <style>
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 400px;
+    }
+    </style>
+
+        
+        
+    <title>AV Bakery Order Management: User Login</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div>
+        <h1>Auroville Bakery Order Management</h1>
+        <div style="margin-bottom: 40px; padding-top: 20px;">
+            <ul class="navbar" style="background-color: #f6ddce;padding-left: 800px;">
+              </ul>
+            </div>
+      </div>
+      <div class="center form-group">
+        <div style="margin-bottom: 20px; margin-left: auto; margin-right: auto; width: 320px;">
+            <h2>Create Admin Account</h2>
+        </div>
+        <form action="/adminCreate" method="post">
+        <% var adminUser = data;%>
+        <ul class="form-fields">
+            <li>
+              <label>First Name</label>
+              <input type="text" name="first_name" id="first_name" value="<%= adminUser.firstName %>" />
+            </li>
+            <li>
+              <label>Last Name</label>
+              <input type="text" name="last_name" id="last_name" value="<%= adminUser.lastName %>" />
+            </li>            
+            <li>
+              <label>Login Id</label>
+              <input type="text" name="login_id" id="login_id" value="<%= adminUser.loginId %>" />
+            </li>
+            <li>
+                <label>Password</label>
+                <input type="text" name="password" id="password" value="<%= adminUser.password %>" />
+            </li>
+
+            <% if (typeof error  !== 'undefined' && error.length > 0) {  %>
+              <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+            <% } %>
+
+            <button id="createAdminUserButton" class="customer-button" style="margin-top: 20px"> Create User </button>
+          </ul>
+        </form> 
+    </div>
+    </body>
+    <footer>
+      <script src="scripts/jquery.js"></script>
+      <script src="scripts/admin.js"></script>
+    </footer>  
+</html>

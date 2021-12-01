@@ -1,7 +1,7 @@
 const routes = require('express').Router();
 
 routes.get('/', (req, res) => {
-  res.redirect('/customerSearch');
+  res.redirect('/login');
 });
 
 routes.get('/customerSearch', (req, res) => {

@@ -30,6 +30,18 @@ function sendResponse(error, data) {
 }
 
 function renderNextView(error, data) {
+  if (error) {
+    console.log(error);
+  }
+  console.log(util.format('Rendering View: %s', nextView));
+  httpResponse.render(nextView, { data: data, error: error });
+}
+
+function renderNextViewOrPageNotFoundOnError(error, data) {
+  if (error || data.length < 1) {
+    console.log("redirecting user to 404 as no data found or error occured while fetching data")
+    nextView = "404";
+  } 
   console.log(util.format('Rendering View: %s', nextView));
   httpResponse.render(nextView, { data: data, error: error });
 }
@@ -43,7 +55,6 @@ function logSavedObject(error, data) {
   if (error) {
     console.log(error);
   } else {
-    //console.log(data);
   }
 }
 
@@ -65,6 +76,7 @@ module.exports = {
   convertToEmptyIfUndefined,
   sendResponse,
   renderNextView,
+  renderNextViewOrPageNotFoundOnError,
   redirectRequest,
   setResponse,
   setRedirect,
