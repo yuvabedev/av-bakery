@@ -2,12 +2,16 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto'); 
 var util = require('util');
+var path = require('path');
 
 var callbackHelper = require('./CallbackHelper');
 var adminService = require('../service/AdminService');
 
 var requestError = {};
 var requestData = {};
+var filename = path.basename(__filename);
+
+
 
 
 /**
@@ -80,12 +84,23 @@ var requestData = {};
       return;
     }
 
-    var adminUserForSave = returnAdminUserForSave(adminUser);
-    
-    callbackHelper.setView("admin/viewEdit");
-    adminService.saveAdminUser(adminUserForSave, callbackHelper.renderNextView.bind({ error: requestError, data: requestData }));
+    var adminUser = prepareAdminUserForSave(adminUser);
+    adminService.saveUserIfLoginIdIsUnique(adminUser, callbackIfLoginIdIsDuplicate, callbackIfLoginIdIsUnique.bind({ error: requestError, data: requestData }));
   });
 
+  function callbackIfLoginIdIsDuplicate(adminUser) {
+    console.log("Executing callback: callbackIfLoginIdIsDuplicate");
+    callbackHelper.setView("admin/create");
+    requestError  = util.format('%s already exist', adminUser.loginId);
+    requestData = adminUser;
+    callbackHelper.renderNextView(error, data);
+  }
+
+  function callbackIfLoginIdIsUnique(error, data) {
+    callbackHelper.setView("admin/viewEdit");
+    console.log(util.format("%s: Displaying admin user id: %s", filename, data[0].id));
+    callbackHelper.renderNextView(error, data);
+  }
 
   function validateAdminUser(adminUser) {
     var loginId = adminUser.loginId.trim();
@@ -152,13 +167,12 @@ var requestData = {};
     }
     return true;
   }
-  
-  function returnAdminUserForSave(adminUserFromRequest) {
-    var adminUserToSave = {};
-    adminUserToSave.name = util.format('%s %s', adminUserFromRequest.firstName.trim(), adminUserFromRequest.lastName.trim());
-    adminUserToSave.loginId = adminUserFromRequest.loginId.trim().toLowerCase();
-    adminUserToSave.password = adminUserFromRequest.password.trim();
-    return adminUserToSave;
+
+  function prepareAdminUserForSave(adminUser) {
+    adminUser.name = util.format('%s %s', adminUser.firstName.trim(), adminUser.lastName.trim());
+    adminUser.loginId = adminUser.loginId.trim().toLowerCase();
+    adminUser.password = adminUser.password.trim();
+    return adminUser;
   }
 
   module.exports = router;

@@ -1,8 +1,11 @@
 var util = require('util');
+var path = require('path');
 
 var httpResponse = null;
 var nextRedirect = null;
 var nextView = null;
+
+var filename = path.basename(__filename);
 
 
 function hasNumber(myString) {
@@ -30,9 +33,6 @@ function sendResponse(error, data) {
 }
 
 function renderNextView(error, data) {
-  if (error) {
-    console.log(error);
-  }
   console.log(util.format('Rendering View: %s', nextView));
   httpResponse.render(nextView, { data: data, error: error });
 }
@@ -67,6 +67,7 @@ function setRedirect(redirect) {
 }
 
 function setView(view) {
+  console.log(util.format("%s: Setting next view to %s", filename, view));
   nextView = view;
 }
 
