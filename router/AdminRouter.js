@@ -12,20 +12,6 @@ var requestData = {};
 var filename = path.basename(__filename);
 
 
-
-
-/**
- * handles http request to load the user login page
- * Loads the EJS admin/login
- */
- router.get('/login', (request, response) => {
-    console.log("Loading login page");
-  
-    callbackHelper.setResponse(response);
-    callbackHelper.setView("admin/login");
-    callbackHelper.renderNextView(requestData, requestError);
-  });
-
 /**
  * handles http request to load the create adming user page
  * Loads the EJS admin/login
@@ -93,7 +79,7 @@ var filename = path.basename(__filename);
     callbackHelper.setView("admin/create");
     requestError  = util.format('%s already exist', adminUser.loginId);
     requestData = adminUser;
-    callbackHelper.renderNextView(error, data);
+    callbackHelper.renderNextView(requestError, requestData);
   }
 
   function callbackIfLoginIdIsUnique(error, data) {

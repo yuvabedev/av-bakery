@@ -36,17 +36,25 @@
         <div style="margin-bottom: 20px; margin-left: auto; margin-right: auto; width: 180px;">
             <h2>User Login</h2>
         </div>
+        <form action="/login" method="post">
+        <% var credentials = data;%>
         <ul class="form-fields">
             <li>
               <label>Login Id</label>
-              <input type="text" name="user_id" id="user_id" />
+              <input type="text" name="login_id" id="login_id" value="<%= credentials.loginId %>" />
             </li>
             <li>
                 <label>Password</label>
-                <input type="text" name="password" id="password" />
-              </li>
+                <input type="text" name="password" id="password" value=""/>
+            </li>
+              <% if (typeof error  !== 'undefined' && error.length > 0) {  %>
+                <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+              <% } %>            
             <button id="loginUserButton" class="customer-button" style="margin-top: 20px"> Log In </button>
-          </ul>    
+          </ul>
+          </form>
+       </div>
+  </body>
     </div>
     </body>
 </html>
