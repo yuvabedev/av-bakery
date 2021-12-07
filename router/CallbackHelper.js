@@ -46,7 +46,7 @@ function renderNextViewOrPageNotFoundOnError(error, data) {
   httpResponse.render(nextView, { data: data, error: error });
 }
 
-function redirectRequest(error, data) {
+function redirectRequest() {
   console.log(util.format('Redirecting to URL: %s', nextRedirect));
   httpResponse.redirect(nextRedirect);
 }

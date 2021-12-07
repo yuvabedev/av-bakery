@@ -28,11 +28,12 @@ var validateSession = function (request, response, next) {
         return;
     }
 
-    if (!request.session || !request.session.login) {
+    if (!request.session || !request.session.user) {
         console.log("No user session found. Redirecing to login page");
         response.redirect(urlToLogin);
     } else {
         console.log("Session validated. Proceedng to next URL:" + requestUrl);
+        response.locals.request = request;
         httpNext();
     }
 }
@@ -43,6 +44,9 @@ var validateSession = function (request, response, next) {
  * @returns 
  */
 function shallSecureRequest(requestUrl) {
+    //No need to secure request to application root url
+    if (requestUrl == "/") return false;
+    
     var secureUrl = true;
     const nonSecurePaths = ['login', 'styles', 'images', 'scripts', 'favicon'];
     nonSecurePaths.every(nonSecurePath => {
@@ -58,9 +62,16 @@ function shallSecureRequest(requestUrl) {
     });
     return secureUrl;
 }
-function initializeUserSession(request, user) {
-    console.log(util.format("%s: User session set for for login id: %s", filename,  user.login_id))
-    request.session.login = user.login_id;
+function initializeUserSession(request, response, user) {
+    request.session.user = user;
+    console.log(util.format("%s: User session set for for login id: %s", filename,  user.login_id));
+    response.locals.request = request;
+}
+
+function removeUserSession(request) {
+    var user = request.session.user;
+    request.session.destroy();
+    console.log("%s: Session destroyed for login id: %s", filename, user.login_id);
 }
 
 module.exports = {

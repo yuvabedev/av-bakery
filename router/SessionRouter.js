@@ -14,6 +14,7 @@ var sessionService = require('../service/SessionService');
 var sessionManager = require('../middleware/SessionManager');
 
 var httpRequest = null;
+var httpResponse = null;
 
 
 
@@ -42,6 +43,7 @@ var httpRequest = null;
   console.log("Logging user");
   callbackHelper.setResponse(response);
   httpRequest = request;
+  httpResponse = response;
 
   var credentials = {};
   credentials.loginId = request.body.login_id;
@@ -69,9 +71,12 @@ function callbackIfLoginFailed(credentials) {
 
 function callbackIfLoginSuccessful(error, data) {
   console.log("Executing callback: callbackIfLoginSuccessful");
-  sessionManager.initializeUserSession(httpRequest, data[0]);
-  callbackHelper.setView("admin/viewEdit");
-  callbackHelper.renderNextView(error, data);
+  var admin_user = data[0];
+  sessionManager.initializeUserSession(httpRequest, httpResponse, admin_user);
+
+  var admin_id = admin_user.id;
+  callbackHelper.setRedirect("/adminView?id=" + admin_id);
+  callbackHelper.redirectRequest();
 }
 
 function validateLoginCredentials(credentials) {

@@ -28,7 +28,7 @@ var filename = path.basename(__filename);
  * handles http request to load the create adming user page
  * Loads the EJS admin/login
  */
- router.get('/viewAdmin', (request, response) => {
+ router.get('/adminView', (request, response) => {
   console.log("Fetchin admin user");
   callbackHelper.setResponse(response);
 
