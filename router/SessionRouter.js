@@ -66,7 +66,7 @@ var httpResponse = null;
  router.post('/logout', (request, response) => {
   var user = request.session.user;
   console.log("Logging out user");
-  //sessionManager.removeUserSession(request);
+  sessionManager.removeUserSession(request);
   response.status(201).send(user);
 });
 
