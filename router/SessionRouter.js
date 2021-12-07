@@ -11,6 +11,10 @@ var requestData = {};
 var filename = path.basename(__filename);
 var sessionService = require('../service/SessionService');
 
+var sessionManager = require('../middleware/SessionManager');
+
+var httpRequest = null;
+
 
 
 /**
@@ -20,9 +24,14 @@ var sessionService = require('../service/SessionService');
  router.get('/login', (request, response) => {
   console.log("Loading login page");
 
+  var authenticationFailed = request.query.authenticationFailed;
+
+  if (authenticationFailed) {
+    requestError = "Please Log In."
+  }
   callbackHelper.setResponse(response);
   callbackHelper.setView("admin/login");
-  callbackHelper.renderNextView(requestData, requestError);
+  callbackHelper.renderNextView(requestError, requestData);
 });
 
 /**
@@ -32,6 +41,7 @@ var sessionService = require('../service/SessionService');
  router.post('/login', (request, response) => {
   console.log("Logging user");
   callbackHelper.setResponse(response);
+  httpRequest = request;
 
   var credentials = {};
   credentials.loginId = request.body.login_id;
@@ -59,6 +69,7 @@ function callbackIfLoginFailed(credentials) {
 
 function callbackIfLoginSuccessful(error, data) {
   console.log("Executing callback: callbackIfLoginSuccessful");
+  sessionManager.initializeUserSession(httpRequest, data[0]);
   callbackHelper.setView("admin/viewEdit");
   callbackHelper.renderNextView(error, data);
 }
