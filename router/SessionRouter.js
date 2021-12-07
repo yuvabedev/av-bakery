@@ -28,7 +28,7 @@ var httpResponse = null;
   var authenticationFailed = request.query.authenticationFailed;
 
   if (authenticationFailed) {
-    requestError = "Please Log In."
+    requestData.authenticationFailed = true;
   }
   callbackHelper.setResponse(response);
   callbackHelper.setView("admin/login");
@@ -56,9 +56,18 @@ var httpResponse = null;
     callbackHelper.renderNextView(requestError, credentials);  
     return;
   }
-
   sessionService.loginUser(credentials, callbackIfLoginSuccessful.bind({ error: requestError, data: requestData }), callbackIfLoginFailed);
+});
 
+/**
+ * handles http request to load the user login page
+ * Loads the EJS admin/login
+ */
+ router.post('/logout', (request, response) => {
+  var user = request.session.user;
+  console.log("Logging out user");
+  //sessionManager.removeUserSession(request);
+  response.status(201).send(user);
 });
 
 function callbackIfLoginFailed(credentials) {

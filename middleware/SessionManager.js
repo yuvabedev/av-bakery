@@ -48,7 +48,7 @@ function shallSecureRequest(requestUrl) {
     if (requestUrl == "/") return false;
     
     var secureUrl = true;
-    const nonSecurePaths = ['login', 'styles', 'images', 'scripts', 'favicon'];
+    const nonSecurePaths = ['login', 'logout', 'styles', 'images', 'scripts', 'favicon'];
     nonSecurePaths.every(nonSecurePath => {
         if (requestUrl.includes(nonSecurePath)) {
             secureUrl = false;
@@ -69,13 +69,18 @@ function initializeUserSession(request, response, user) {
 }
 
 function removeUserSession(request) {
+    if (!request.session) {
+        console.log("%s: No Session associated with this request. Nothing happened %s", filename);
+        return;
+    }
     var user = request.session.user;
-    request.session.destroy();
     console.log("%s: Session destroyed for login id: %s", filename, user.login_id);
+    request.session = null;
 }
 
 module.exports = {
     initializeUserSession,
+    removeUserSession,
     validateSession
   };
   
