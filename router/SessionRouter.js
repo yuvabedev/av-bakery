@@ -11,6 +11,11 @@ var requestData = {};
 var filename = path.basename(__filename);
 var sessionService = require('../service/SessionService');
 
+var sessionManager = require('../middleware/SessionManager');
+
+var httpRequest = null;
+var httpResponse = null;
+
 
 
 /**
@@ -20,9 +25,22 @@ var sessionService = require('../service/SessionService');
  router.get('/login', (request, response) => {
   console.log("Loading login page");
 
+  //resetting error and data objects passed to the view
+  requestError = {};
+  requestData = {};  
+
+  var authenticationFailed = request.query.authenticationFailed;
+  var logoutSuccess = request.query.logoutSuccess;
+
+  if (authenticationFailed) {
+    requestData.authenticationFailed = true;
+  } else if (logoutSuccess) {
+    requestData.logoutSuccess = true;
+  } 
   callbackHelper.setResponse(response);
   callbackHelper.setView("admin/login");
-  callbackHelper.renderNextView(requestData, requestError);
+
+  callbackHelper.renderNextView(requestError, requestData);
 });
 
 /**
@@ -32,6 +50,8 @@ var sessionService = require('../service/SessionService');
  router.post('/login', (request, response) => {
   console.log("Logging user");
   callbackHelper.setResponse(response);
+  httpRequest = request;
+  httpResponse = response;
 
   var credentials = {};
   credentials.loginId = request.body.login_id;
@@ -44,9 +64,19 @@ var sessionService = require('../service/SessionService');
     callbackHelper.renderNextView(requestError, credentials);  
     return;
   }
-
   sessionService.loginUser(credentials, callbackIfLoginSuccessful.bind({ error: requestError, data: requestData }), callbackIfLoginFailed);
+});
 
+/**
+ * handles http request to load the user login page
+ * Loads the EJS admin/login
+ */
+ router.post('/logout', (request, response) => {
+  var user = request.session.user;
+  console.log(user);
+  console.log(util.format("%s: Logging out user %s", filename, user.login_id));
+  sessionManager.removeUserSession(request);
+  response.status(201).send(requestData);
 });
 
 function callbackIfLoginFailed(credentials) {
@@ -59,8 +89,12 @@ function callbackIfLoginFailed(credentials) {
 
 function callbackIfLoginSuccessful(error, data) {
   console.log("Executing callback: callbackIfLoginSuccessful");
-  callbackHelper.setView("admin/viewEdit");
-  callbackHelper.renderNextView(error, data);
+  var admin_user = data[0];
+  sessionManager.initializeUserSession(httpRequest, httpResponse, admin_user);
+
+  var admin_id = admin_user.id;
+  callbackHelper.setRedirect("/adminView?id=" + admin_id);
+  callbackHelper.redirectRequest();
 }
 
 function validateLoginCredentials(credentials) {
