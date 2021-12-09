@@ -25,13 +25,21 @@ var httpResponse = null;
  router.get('/login', (request, response) => {
   console.log("Loading login page");
 
+  //resetting error and data objects passed to the view
+  requestError = {};
+  requestData = {};  
+
   var authenticationFailed = request.query.authenticationFailed;
+  var logoutSuccess = request.query.logoutSuccess;
 
   if (authenticationFailed) {
     requestData.authenticationFailed = true;
-  }
+  } else if (logoutSuccess) {
+    requestData.logoutSuccess = true;
+  } 
   callbackHelper.setResponse(response);
   callbackHelper.setView("admin/login");
+
   callbackHelper.renderNextView(requestError, requestData);
 });
 
@@ -65,9 +73,10 @@ var httpResponse = null;
  */
  router.post('/logout', (request, response) => {
   var user = request.session.user;
-  console.log("Logging out user");
+  console.log(user);
+  console.log(util.format("%s: Logging out user %s", filename, user.login_id));
   sessionManager.removeUserSession(request);
-  response.status(201).send(user);
+  response.status(201).send(requestData);
 });
 
 function callbackIfLoginFailed(credentials) {

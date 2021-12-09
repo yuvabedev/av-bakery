@@ -53,6 +53,9 @@
               <% if (data.authenticationFailed) {  %>
                 <span style="display: block; margin-top: 10px; height: 40px" class="error">Please Log In To Access Order Management</span>
               <% } %>
+              <% if (data.logoutSuccess) {  %>
+                <span style="display: block; margin-top: 10px; height: 40px" class="success">Logout Successful</span>
+              <% } %>
             <button id="loginUserButton" class="customer-button" style="margin-top: 20px"> Log In </button>
           </ul>
           </form>

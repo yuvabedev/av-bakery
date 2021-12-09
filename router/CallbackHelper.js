@@ -33,7 +33,7 @@ function sendResponse(error, data) {
 }
 
 function renderNextView(error, data) {
-  console.log(util.format('Rendering View: %s', nextView));
+  console.log(util.format('%s: Rendering View: %s', filename, nextView));
   httpResponse.render(nextView, { data: data, error: error });
 }
 
@@ -42,21 +42,15 @@ function renderNextViewOrPageNotFoundOnError(error, data) {
     console.log("redirecting user to 404 as no data found or error occured while fetching data")
     nextView = "404";
   } 
-  console.log(util.format('Rendering View: %s', nextView));
+  console.log(util.format('%s: Rendering View: %s', filename, nextView));
   httpResponse.render(nextView, { data: data, error: error });
 }
 
 function redirectRequest() {
-  console.log(util.format('Redirecting to URL: %s', nextRedirect));
+  console.log(util.format('%s: Redirecting to URL: %s', filename, nextRedirect));
   httpResponse.redirect(nextRedirect);
 }
 
-function logSavedObject(error, data) {
-  if (error) {
-    console.log(error);
-  } else {
-  }
-}
 
 function setResponse (response) {
   httpResponse = response;
@@ -82,5 +76,4 @@ module.exports = {
   setResponse,
   setRedirect,
   setView,
-  logSavedObject,
 };

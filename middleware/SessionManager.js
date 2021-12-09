@@ -14,7 +14,7 @@ var validateSession = function (request, response, next) {
     var urlToLogin = "/login?authenticationFailed=true";
 
     var requestUrl = request.originalUrl;
-    console.log("Request URL: " + requestUrl);
+    console.log(util.format("%s: Request URL: %s", filename, requestUrl));
 
     //If the HTTP Request is for the login page no need to validate session
 
@@ -75,7 +75,7 @@ function removeUserSession(request) {
     }
     var user = request.session.user;
     console.log("%s: Session destroyed for login id: %s", filename, user.login_id);
-    request.session = null;
+    request.session.destroy();
 }
 
 module.exports = {
