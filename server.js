@@ -42,6 +42,10 @@ app.use('/', customerRoutes);
 var orderRoutes = require('./router/OrderRouter');
 app.use('/', orderRoutes);
 
+var productManagementRoutes = require('./router/ProductManagementRouter');
+app.use('/', productManagementRoutes);
+
+
 var orderManagementRoutes = require('./router/OrderManagementRouter');
 app.use('/', orderManagementRoutes);
 

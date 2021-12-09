@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- set viewport to device width to make site responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/base.css" />
+
+    <style>
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 400px;
+    }
+
+    input.largerCheckbox {
+            width: 18px;
+            height: 18px;
+            margin-left: -2px;
+            margin-top: 5px;
+        }
+
+.container {
+  display: block;
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 200px;
+  height: 18px;
+  width: 18px;
+  background-color: #f7f7f7;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #b36653;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+</style>
+
+        
+        
+    <title>AV Bakery Order Management: User Login</title>
+
+  </head>
+  <body>
+    <div style="padding-bottom: 30px;">
+        <h1>Auroville Bakery Order Management</h1>
+        <%- include("../navbar") %>
+    </div>
+      <div class="center form-group">
+        <div style="margin-bottom: 20px; margin-left: auto; margin-right: auto; width: 200px;">
+            <h2>Add Product</h2>
+        </div>
+        <form action="/productCreate" method="post">
+        <% var product = data;%>
+        <ul class="form-fields">
+            <li>
+              <label>Product Name</label>
+              <input type="text" name="name" id="name" value="<%= product.name %>" />
+            </li>
+            
+            <li>
+              <label>Category</label>
+              <input type="text" name="category" id="category" value="<%= product.category %>" />
+            </li>            
+            
+            <li>
+              <label>Ingredients</label>
+              <input type="text" name="ingredients" id="ingredients" value="<%= product.ingredients %>" />
+            </li>
+            
+            <li><label class="container">Vegan
+              <input type="checkbox" name="is_vegan" id="is_vegan" value="<%= product.is_vegan %>" class="largerCheckbox" />
+              <span class="checkmark"></span>
+            </label>
+            </li>
+            
+            <li><label class="container">Dairy Free
+              <input type="checkbox" name="is_dairyfree" id="is_dairyfree" value="<%= product.is_dairyfree %>" class="largerCheckbox" />
+              <span class="checkmark"></span>
+            </label></li>
+            
+            <li><label class="container">Eggless
+              <input type="checkbox" name="is_eggless" id="is_eggless" value="<%= product.is_eggless %>" class="largerCheckbox" />
+              <span class="checkmark"></span>
+            </label></li>
+
+            
+            <% if (typeof error  !== 'undefined' && error.length > 0) {  %>
+              <span id="saveMessage" style="display: block; margin-top: 10px; height: 40px" class="error"><%= error %></span>
+            <% } %>
+
+            <button id="createProductUserButton" class="customer-button" style="margin-top: 20px"> Add Product </button>
+          </ul>
+        </form> 
+    </div>
+    </body>
+    <footer>
+      <script src="scripts/jquery.js"></script>
+      <script src="scripts/product.js"></script>
+    </footer>  
+</html>
