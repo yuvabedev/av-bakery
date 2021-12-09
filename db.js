@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'baker',
-  password: 'bread',
+  host: 'avb.yuvabe.com',
+  user: 'developer',
+  password: 'dev_password',
   database: 'av_bakery',
   timezone: 'utc + 5:30'
 });
