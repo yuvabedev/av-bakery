@@ -4,6 +4,8 @@ var util = require('util');
 var path = require('path');
 
 var callbackHelper = require('./CallbackHelper');
+var viewHelper = require('./ViewHelper');
+
 
 var requestError = {};
 var requestData = {};
@@ -25,6 +27,8 @@ var httpResponse = null;
     callbackHelper.setResponse(response);
     callbackHelper.setView("product/create");
   
+    response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
+
     callbackHelper.renderNextView(requestError, requestData);
 
 });
@@ -40,18 +44,63 @@ var httpResponse = null;
   httpRequest = request;
   httpResponse = response;
 
-  var product = {};
-  
-  product.name = request.body.product_name;
-  product.category = request.body.category;
-  product.ingredients = request.body.ingredients;
-  product.image_url = request.body.image_url;
-  product.is_vegan = request.body.is_vegan;
-  product.is_dairyfree = request.body.is_dairyfree;
-  product.is_eggless = request.body.is_eggless;
+  if (!validateReuest(request)) {
+    console.log("Request to create product failed validation!");
+    console.log("Error:" + JSON.stringify(requestError, null, 2))
+    callbackHelper.setView("product/create");
 
+    response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
+    callbackHelper.renderNextView(requestError, request.body);  
+    return;
+  }
+
+  var product = prepareProductForSave(request);
+
+  console.log("Saving product: " + JSON.stringify(product, null));
   //save product
 });
 
+function validateReuest(request) {
+  if (!callbackHelper.hasValue(request.body.name)) {
+    requestError = 'Please enter product name.';
+    return false;
+  }
+  if (!callbackHelper.hasValue(request.body.categories)) {
+    requestError = 'Please select a product category.';
+    return false;
+  }
+  return true;
+}
 
+function prepareProductForSave(request) {
+  var product = {};
+  product.name = request.body.name;
+  product.category_id = request.body.categories;
+
+  //if product is vegan then it implies that it is also dairy free and egg less
+  if (request.body.is_vegan && request.body.is_vegan == 'on') {
+    product.is_vegan = 1;
+    product.is_eggless = 1;
+    product.is_dairyfree = 1;
+
+    return product;
+  }
+
+  //product is not vegan 
+  product.is_vegan = 0;
+
+  if (request.body.is_eggless && request.body.is_eggless == 'on') {
+    product.is_eggless = 1;
+  } else {
+    product.is_eggless = 0;
+  }
+
+  if (request.body.is_dairyfree && request.body.is_dairyfree == 'on') {
+    product.is_dairyfree = 1;
+  } else {
+    product.is_dairyfree = 0;
+  }
+
+  return product;
+}
 module.exports = router;
