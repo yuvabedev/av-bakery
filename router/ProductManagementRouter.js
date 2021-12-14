@@ -15,6 +15,8 @@ var filename = path.basename(__filename);
 var httpRequest = null;
 var httpResponse = null;
 
+var productService = require('../service/ProductService');
+
 
 
 /**
@@ -57,6 +59,9 @@ var httpResponse = null;
   var product = prepareProductForSave(request);
 
   console.log("Saving product: " + JSON.stringify(product, null));
+
+  productService.saveProduct(product, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+
   //save product
 });
 
@@ -75,32 +80,33 @@ function validateReuest(request) {
 function prepareProductForSave(request) {
   var product = {};
   product.name = request.body.name;
-  product.category_id = request.body.categories;
+  product.categoryId = request.body.categories;
+  product.status = 'ACTIVE';
 
   //if product is vegan then it implies that it is also dairy free and egg less
   if (request.body.is_vegan && request.body.is_vegan == 'on') {
-    product.is_vegan = 1;
-    product.is_eggless = 1;
-    product.is_dairyfree = 1;
+    product.isVegan = 1;
+    product.isEggless = 1;
+    product.isDairyfree = 1;
 
     return product;
   }
 
   //product is not vegan 
-  product.is_vegan = 0;
+  product.isVegan = 0;
 
   if (request.body.is_eggless && request.body.is_eggless == 'on') {
-    product.is_eggless = 1;
+    product.isEggless = 1;
   } else {
-    product.is_eggless = 0;
+    product.isEggless = 0;
   }
 
   if (request.body.is_dairyfree && request.body.is_dairyfree == 'on') {
-    product.is_dairyfree = 1;
+    product.isDairyfree = 1;
   } else {
-    product.is_dairyfree = 0;
+    product.isDairyfree = 0;
   }
-
+  
   return product;
 }
 module.exports = router;

@@ -17,7 +17,7 @@ function getAllActiveProducts(callback) {
 
   function getProductsByCategoryId(categoryId, callback) {
     var sql = getQueryToFetchProductsByCategoryId(categoryId);
-    executeQuery(sql, callback);
+    dbProvider.executeQuery(sql, callback);
   }
 
   function getQueryToFetchProductsByCategoryId(categoryId) {
@@ -32,30 +32,21 @@ function getAllActiveProducts(callback) {
     return util.format("SELECT * FROM `product_category`");
   }
 
-  function executeSaveAndReturnSavedEntityQuery(sql, callback) {
-    console.log(util.format('%s: Executing SQL: %s', filename, sql));
-    connection.query(sql, function (error, results) {
-      if (error) {
-        callback(error, results);
-      } else {
-        returnById(results.insertId, callback);
-      }
-    });
+  function saveProduct(product, callback) {
+    var sql = getQueryToSaveProduct(product);
+    dbProvider.setTableName("product");
+    dbProvider.executeSaveAndReturnSavedEntityQuery(sql, callback)
   }
 
-  function executeQuery(sql, callback) {
-      console.log(util.format('%s: Executing SQL: %s', filename, sql));
-      connection.query(sql, function (error, results) {
-        if (error) {
-          callback(error, results);
-        } else {
-          callback(error, results);
-        }
-      });
-    }
+  function getQueryToSaveProduct(product) {
+    var saveProductSql = "INSERT INTO product (name, category_id, status, ingredients, image_url, is_vegan, is_dairyfree, is_eggless)\
+    VALUES ('%s', '%s', '%s', '%s', '%s', %d, %d, %d);"
+    return util.format(saveProductSql, product.name, product.categoryId, product.status, "", "", product.isVegan, product.isDairyfree, product.isEggless);
+  }
 
   module.exports = {
     getAllActiveProducts,
     getAllProductCategories,
-    getProductsByCategoryId
+    getProductsByCategoryId,
+    saveProduct
   };
