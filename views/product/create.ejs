@@ -89,6 +89,21 @@
       transform: rotate(45deg);
     }
 
+    input[type=file]::file-selector-button {
+      color: white;
+      border: none;
+      padding: .2em .4em;
+      border-radius: .2em;
+      background-color: #b36653;
+      transition: 1s;
+      font-weight: 300;
+      font-size: 0.9em;
+  }
+
+  input[type=file]::file-selector-button:hover {
+    background-color: #da836d;
+  }
+
 </style>
 
         
@@ -105,19 +120,23 @@
         <div style="margin-bottom: 20px; margin-left: auto; margin-right: auto; width: 200px;">
             <h2>Add Product</h2>
         </div>
-        <form action="/productCreate" method="post">
+        <form action="/productCreate" method="post" enctype="multipart/form-data">
         <% var product = data;%>
         <ul class="form-fields">
             <li>
               <label>Product Name</label>
               <input type="text" name="name" id="name" value="<%= product.name %>" />
             </li>
-            
+            <li>
+              <label>Upload Photo</label>
+                <span style="display: inline-block; margin-right: -55px; ">
+                  <input type="file" id="product_image" name="product_image" />
+                </span>
+            </li>           
             <li>
               <label>Category</label>
               <%- categoriesDropdown %>
             </li>            
-            
             <li>
               <label>Ingredients</label>
               <input type="text" name="ingredients" id="ingredients" value="<%= product.ingredients %>" />
