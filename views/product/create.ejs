@@ -7,12 +7,21 @@
     <link rel="stylesheet" type="text/css" href="styles/base.css" />
 
     <style>
+    
+    .form-group li {
+      margin-bottom: 1em;
+    }
     .center {
         margin-left: auto;
         margin-right: auto;
         width: 400px;
     }
 
+    .form-fields select {
+        flex: 1 0 60px;
+        margin-right: 25px;
+    }
+    
     input.largerCheckbox {
             width: 18px;
             height: 18px;
@@ -20,69 +29,65 @@
             margin-top: 5px;
         }
 
-.container {
-  display: block;
-  position: relative;
-  margin-bottom: 12px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+    .container {
+      display: block;
+      position: relative;
+      margin-bottom: 12px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
 
-/* Hide the browser's default checkbox */
-.container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
+    /* Hide the browser's default checkbox */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
 
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 200px;
-  height: 18px;
-  width: 18px;
-  background-color: #f7f7f7;
-}
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 200px;
+      height: 18px;
+      width: 18px;
+      background-color: #f7f7f7;
+    }
 
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+      background-color: #e1e1e1;
+    }
 
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-}
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
 
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+      display: block;
+    }
 
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-  left: 4px;
-  top: 1px;
-  width: 5px;
-  height: 10px;
-  border: solid #b36653;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
+    /* Style the checkmark/indicator */
+    .container .checkmark:after {
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid #b36653;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
 
 </style>
 
@@ -110,7 +115,7 @@
             
             <li>
               <label>Category</label>
-              <input type="text" name="category" id="category" value="<%= product.category %>" />
+              <%- categoriesDropdown %>
             </li>            
             
             <li>
@@ -119,19 +124,19 @@
             </li>
             
             <li><label class="container">Vegan
-              <input type="checkbox" name="is_vegan" id="is_vegan" value="<%= product.is_vegan %>" class="largerCheckbox" />
+              <input type="checkbox" name="is_vegan" id="is_vegan" onchange="updateVeganRelatedCheckboxes(this)"/>
               <span class="checkmark"></span>
             </label>
             </li>
             
             <li><label class="container">Dairy Free
-              <input type="checkbox" name="is_dairyfree" id="is_dairyfree" value="<%= product.is_dairyfree %>" class="largerCheckbox" />
-              <span class="checkmark"></span>
+              <input type="checkbox" name="is_dairyfree" id="is_dairyfree" />
+              <span class="checkmark dairyfree"></span>
             </label></li>
             
             <li><label class="container">Eggless
-              <input type="checkbox" name="is_eggless" id="is_eggless" value="<%= product.is_eggless %>" class="largerCheckbox" />
-              <span class="checkmark"></span>
+              <input type="checkbox" name="is_eggless" id="is_eggless"  />
+              <span class="checkmark eggless"></span>
             </label></li>
 
             
@@ -146,6 +151,6 @@
     </body>
     <footer>
       <script src="scripts/jquery.js"></script>
-      <script src="scripts/product.js"></script>
+      <script src="scripts/product_management.js"></script>
     </footer>  
 </html>

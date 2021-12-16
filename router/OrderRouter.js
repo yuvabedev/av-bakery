@@ -12,6 +12,7 @@ var customerService = require('../service/CustomerService');
 var productService = require('../service/ProductService');
 var orderService = require('../service/OrderService');
 var callbackHelper = require('./CallbackHelper');
+var viewHelper = require('./ViewHelper');
 
 var DATE_FORMAT = "DD/MM/YYYY";
 
@@ -36,9 +37,9 @@ var defaultOptionForDropDown = '<option value="" selected>Select...</option>';
   callbackHelper.setResponse(response);
   callbackHelper.setView("order/create");
 
-  createProductCategoryDropdown(null);
-  createDeliveryScheduleDropdown(null);
-  createDeliveryLocationDropdown(null);
+  httpResponse.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown("onchange", "updateProductDropdown(this)");
+  httpResponse.locals.deliveryLocationDropdown  = viewHelper.createDeliveryLocationDropdown();
+
   customerService.fetchCustomer(customerId, 'id', callbackHelper.renderNextView.bind({ error: requestError, data: requestData }));
 });
 
@@ -48,49 +49,6 @@ router.get('/productsByCategory', (request, response) => {
   callbackHelper.setResponse(response);
   productService.getProductsByCategoryId(categoryId, callbackHelper.sendResponse.bind({requestError, requestData}));
 });
-
-
-function createProductCategoryDropdown(selectedCategory) {
-  var productCategories = global.productCategories;
-  var dropDown = '<select class="select-menu" name="categories" id="categories" onChange="updateProductDropdown(this)">';
-  defaultOptionForDropDown = '<option value="" selected>Select Category...</option>';
-  dropDown = dropDown + defaultOptionForDropDown;
-  productCategories.forEach(function(category) {
-   var option = '<option value="%s">%s</option>';
-    option = util.format(option, category.id, category.name);
-    dropDown = dropDown + option;
- });
- dropDown = dropDown + "</select>";
- httpResponse.locals.categoriesDropdown  = dropDown;
- httpResponse.locals.productCategories  = productCategories;
-}
-
-function createDeliveryScheduleDropdown(error, data) {
-  var deliverySchedule = global.deliverySchedule;
-  var dropDown = '<select class="select-menu" name="deliverySchedule" id="deliverySchedule">';
-  defaultOptionForDropDown = '<option value="" selected>Select Location...</option>';
-  deliverySchedule.forEach(function(schedule) {
-    var option = '<option value="%s">%s</option>';
-    option = util.format(option, schedule.total_deliveries, schedule.description);
-    dropDown = dropDown + option;
-  });
-  dropDown = dropDown + "</select>";
-  httpResponse.locals.deliveryScheduleDropdown  = dropDown;
- }
-
- function createDeliveryLocationDropdown(selectedLocation) {
-  var deliverLocations = global.deliveryLocations;
-  var dropDown = '<select class="select-menu" name="deliveryLocation" id="deliveryLocation">';
-  dropDown = dropDown + defaultOptionForDropDown;
-  deliverLocations.forEach(function(location) {
-    var option = '<option value="%s">%s</option>';
-    option = util.format(option, location.name, location.name);
-    dropDown = dropDown + option;
-  });
-  dropDown = dropDown + "</select>";
-
-  httpResponse.locals.deliveryLocationDropdown  = dropDown;
- }
 
 
     /**
