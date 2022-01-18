@@ -12,12 +12,30 @@ var requestData = {};
 
 var filename = path.basename(__filename);
 
-var httpRequest = null;
-var httpResponse = null;
-
 var productService = require('../service/ProductService');
 
+const multer  = require('multer');
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './upload/product')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+const Image_Filter = function(request, file, cb) {
+  // Accept images only
+  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+    request.fileValidationError = 'Only image files are allowed!';
+    requestError = "Only image files are allowed.";
+      return cb(new Error('Only image files are allowed!'), false);
+    }
+  cb(null, true);
+}
+
+const upload = multer({ storage: storage, fileFilter: Image_Filter }).single('product_image');
 
 /**
  * handles http request to create a product
@@ -31,6 +49,8 @@ var productService = require('../service/ProductService');
   
     response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
 
+    requestError = "";
+
     callbackHelper.renderNextView(requestError, requestData);
 
 });
@@ -40,29 +60,53 @@ var productService = require('../service/ProductService');
  * On success viewEditProduct page is loaded
  */
  router.post('/productCreate', (request, response) => {
-  console.log("Creating a new product");
-  console.log(request.body);
+
   callbackHelper.setResponse(response);
   httpRequest = request;
   httpResponse = response;
 
-  if (!validateReuest(request)) {
-    console.log("Request to create product failed validation!");
-    console.log("Error:" + JSON.stringify(requestError, null, 2))
-    callbackHelper.setView("product/create");
+  upload(request, response, function (err) {
 
-    response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
-    callbackHelper.renderNextView(requestError, request.body);  
-    return;
-  }
+    console.log(request.body);
 
-  var product = prepareProductForSave(request);
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading.
+      console.log(err);
+      callbackHelper.setView("product/create");  
+      response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
+      callbackHelper.renderNextView(requestError, request.body);  
+      return;
+    } else if (err) {
+      // An unknown error occurred when uploading.
+      console.log(err);
+      callbackHelper.setView("product/create");
+      response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
+      callbackHelper.renderNextView(requestError, request.body);  
+      return;
+    }
 
-  console.log("Saving product: " + JSON.stringify(product, null));
+    if (!validateReuest(request)) {
+      console.log("Request to create product failed validation!");
+      console.log("Error:" + JSON.stringify(requestError, null, 2))
+      callbackHelper.setView("product/create");
+  
+      response.locals.categoriesDropdown = viewHelper.createProductCategoryDropdown();
+      callbackHelper.renderNextView(requestError, request.body);  
+      return;
+    }
 
-  productService.saveProduct(product, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    console.log("Creating a new product");
 
-  //save product
+    var product = prepareProductForSave(request);
+  
+    console.log("Saving product: " + JSON.stringify(product, null));
+  
+    productService.saveProduct(product, callbackHelper.sendResponse.bind({ error: requestError, data: requestData }));
+    
+    //product saved
+
+  });
+
 });
 
 function validateReuest(request) {
